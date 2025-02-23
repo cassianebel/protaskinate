@@ -9,6 +9,8 @@ import Home from "./Components/Home";
 import Profile from "./Components/Profile";
 import { IoInvertMode } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
+import { FaCirclePlus } from "react-icons/fa6";
+import CreateTaskForm from "./Components/CreateTaskForm";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -40,11 +42,6 @@ function App() {
               to="/"
               className="text-xl md:text-2xl lg:text-3xl font-bold"
             >
-              {/* pr<span className="hidden md:inline">o</span>t
-              <span className="hidden md:inline">a</span>sk
-              <span className="hidden md:inline">i</span>n
-              <span className="hidden md:inline">a</span>t
-              <span className="hidden md:inline">e</span> */}
               protaskinate
             </NavLink>
           </h1>
@@ -65,9 +62,12 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signout" element={<SignOut />} />
           <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/create" element={<CreateTaskForm user={user} />} />
         </Routes>
-        <footer className="sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 text-center">
-          <p>footer</p>
+        <footer className="sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 flex items-center justify-center text-3xl">
+          <NavLink to="/create">
+            <FaCirclePlus />
+          </NavLink>
         </footer>
       </div>
     </div>

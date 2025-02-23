@@ -1,6 +1,7 @@
 import {
   doc,
   setDoc,
+  addDoc,
   query,
   collection,
   getDocs,
@@ -22,6 +23,32 @@ export const createUserInDatabase = async (user) => {
     console.log("User data saved to Firestore");
   } catch (error) {
     console.error("Error creating/updating user in Firestore:", error.message);
+  }
+};
+
+export const createTask = async (taskData) => {
+  try {
+    const tasksCollectionRef = collection(db, "tasks");
+    const docRef = await addDoc(tasksCollectionRef, taskData);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return null;
+  }
+};
+
+export const fetchUsersTasks = async (user) => {
+  try {
+    const tasksCollectionRef = collection(db, "tasks");
+    const tasksQuery = query(tasksCollectionRef, where("userId", "==", user));
+    const querySnapshot = await getDocs(tasksQuery);
+    const tasks = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return tasks;
+  } catch (error) {
+    console.error("Error fetching tasks:", error.message);
   }
 };
 

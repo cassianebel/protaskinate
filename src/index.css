@@ -6,3 +6,22 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.low {
+  @apply bg-yellow-200 dark:bg-yellow-500;
+  > div {
+    @apply border-yellow-200 dark:border-yellow-500;
+  }
+}
+.medium {
+  @apply bg-orange-300 dark:bg-orange-500;
+  > div {
+    @apply border-orange-300 dark:border-orange-500;
+  }
+}
+.high {
+  @apply bg-red-400 dark:bg-red-500;
+  > div {
+    @apply border-red-400 dark:border-red-500;
+  }
+}
