@@ -6,6 +6,8 @@ import {
   collection,
   getDocs,
   where,
+  updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -49,6 +51,25 @@ export const fetchUsersTasks = async (user) => {
     return tasks;
   } catch (error) {
     console.error("Error fetching tasks:", error.message);
+  }
+};
+
+export const fetchTask = async (taskId) => {
+  try {
+    const taskRef = doc(db, "tasks", taskId);
+    const querySnapshot = await getDoc(taskRef);
+    return querySnapshot;
+  } catch (error) {
+    console.error("Error fetching tasks:", error.message);
+  }
+};
+
+export const updateTask = async (taskId, updatedData) => {
+  try {
+    const taskRef = doc(db, "tasks", taskId);
+    await updateDoc(taskRef, updatedData);
+  } catch (error) {
+    console.error("Error updating task:", error);
   }
 };
 

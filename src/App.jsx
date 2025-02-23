@@ -11,6 +11,7 @@ import { IoInvertMode } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 import CreateTaskForm from "./Components/CreateTaskForm";
+import EditTaskForm from "./Components/EditTaskForm";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -63,6 +64,7 @@ function App() {
           <Route path="/signout" element={<SignOut />} />
           <Route path="/profile" element={<Profile user={user} />} />
           <Route path="/create" element={<CreateTaskForm user={user} />} />
+          <Route path="/edit/:taskId" element={<EditTaskForm user={user} />} />
         </Routes>
         <footer className="sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 flex items-center justify-center text-3xl">
           <NavLink to="/create">

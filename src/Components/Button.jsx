@@ -14,7 +14,7 @@ const Button = ({ text, type, style, icon, action }) => {
   return (
     <button
       type={type ? type : "button"}
-      className={`w-full my-3 p-2 px-4 rounded-md flex items-center justify-center gap-2 ${buttonStyle}`}
+      className={`w-full my-3 p-2 px-4 rounded-md flex items-center justify-center gap-2 cursor-pointer ${buttonStyle}`}
       onClick={action ? action : null}
     >
       {icon ? icon : ""}

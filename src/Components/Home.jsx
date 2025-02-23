@@ -54,9 +54,23 @@ const Home = ({ user }) => {
 
         return 0;
       });
-      inProgress = inProgress.sort(
-        (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-      );
+      inProgress.sort((a, b) => {
+        // First, sort by priority
+        const progressPriorityDiff =
+          priorityOrder[a.priority] - priorityOrder[b.priority];
+        if (progressPriorityDiff !== 0) return progressPriorityDiff;
+
+        // If priorities are the same, sort by dueDate (earliest first)
+        if (a.dueDate && b.dueDate) {
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        }
+
+        // Tasks with a dueDate should come before those without
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+
+        return 0;
+      });
 
       setCompletedTasks(completed);
       setToDoTasks(toDo);
