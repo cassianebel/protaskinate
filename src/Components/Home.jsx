@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import Link from "./Link";
 import { fetchUsersTasks } from "../firestore";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import {
+  DndContext,
+  DragOverlay,
+  useDraggable,
+  useDroppable,
+} from "@dnd-kit/core";
+import Column from "./Column";
 import TaskCard from "./TaskCard";
 
 const Home = ({ user }) => {
@@ -10,6 +19,7 @@ const Home = ({ user }) => {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [toDoTasks, setToDoTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
+  const [activeTask, setActiveTask] = useState(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -78,6 +88,36 @@ const Home = ({ user }) => {
     }
   }, [tasks]);
 
+  const handleDragStart = (event) => {
+    setActiveTask(event.active.data.current);
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const taskId = active.id;
+    const newStatus = over.id;
+
+    if (activeTask.status !== newStatus) {
+      // Update Firestore
+      const taskRef = doc(db, "tasks", taskId);
+      await updateDoc(taskRef, {
+        status: newStatus,
+        lastModifiedTimestamp: new Date(),
+      });
+
+      // Update local state
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    }
+
+    setActiveTask(null);
+  };
+
   return (
     <div className="w-full">
       {!user ? (
@@ -91,70 +131,34 @@ const Home = ({ user }) => {
         </div>
       ) : (
         <div className="w-full p-6 lg:grid lg:grid-cols-3 lg:gap-6">
-          <div className="">
-            <h2 className="text-2xl text-center m-4">Current Task</h2>
-            {loading ? (
-              <p className="text-center">Loading...</p>
-            ) : error ? (
-              <p className="text-center text-red-700 dark:text-red-400">
-                {error}
-              </p>
-            ) : inProgressTasks.length > 0 ? (
-              inProgressTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className={`${task.priority} ps-4 my-6 rounded-md shadow-md`}
-                >
-                  <TaskCard task={task} />
-                </div>
-              ))
-            ) : (
-              <p className="text-center">Let's get to work on something!</p>
-            )}
-          </div>
-
-          <div className="lg:order-first">
-            <h2 className="text-2xl text-center m-4">To-Dos</h2>
-            {loading ? (
-              <p className="text-center">Loading...</p>
-            ) : error ? (
-              <p className="text-center text-red-700 dark:text-red-400">
-                {error}
-              </p>
-            ) : toDoTasks.length > 0 ? (
-              toDoTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className={`${task.priority} ps-4 my-6 rounded-md shadow-md`}
-                >
-                  <TaskCard task={task} />
-                </div>
-              ))
-            ) : (
-              <p className="text-center">Let's get to work on something!</p>
-            )}
-          </div>
-          <div>
-            <h2 className="text-2xl text-center m-4">Completed Tasks</h2>
-            {loading ? (
-              <p className="text-center">Loading...</p>
-            ) : error ? (
-              <p className="text-center text-red-700 dark:text-red-400">
-                {error}
-              </p>
-            ) : completedTasks.length > 0 ? (
-              completedTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className={`${task.priority} ps-4 my-6 rounded-md shadow-md opacity-50`}
-                >
-                  <TaskCard task={task} />
-                </div>
-              ))
-            ) : (
-              <p className="text-center">Let's get to work on something!</p>
-            )}
-          </div>
+          <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            <Column
+              key="in-progredd"
+              id="in-progress"
+              title="Current Task"
+              tasks={inProgressTasks}
+              text="What are you working on?"
+            />
+            <div className="lg:order-first">
+              <Column
+                key="to-do"
+                id="to-do"
+                title="To-Dos"
+                tasks={toDoTasks}
+                text="Let's get protaskinating!"
+              />
+            </div>
+            <Column
+              key="completed"
+              id="completed"
+              title="Completed Tasks"
+              tasks={completedTasks}
+              text="Are you protaskinating?"
+            />
+            <DragOverlay>
+              {activeTask ? <TaskCard task={activeTask} /> : null}
+            </DragOverlay>
+          </DndContext>
         </div>
       )}
     </div>
