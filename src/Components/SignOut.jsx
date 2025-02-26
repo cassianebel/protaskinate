@@ -18,7 +18,7 @@ function SignOut() {
 
   return (
     <div className="min-w-80 mx-auto p-5">
-      <Button text="Sign Out" style="primary" action={handleSignOut} />
+      <Button text="Sign Out" style="secondary" action={handleSignOut} />
     </div>
   );
 }

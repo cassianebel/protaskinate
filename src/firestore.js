@@ -28,6 +28,32 @@ export const createUserInDatabase = async (user) => {
   }
 };
 
+export const fetchUserFromDatabase = async (user) => {
+  try {
+    const userDocRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user from Firestore:", error.message);
+  }
+};
+
+export const updateUserInDatabase = async (user, updatedData) => {
+  try {
+    const userDocRef = doc(db, "users", user.uid);
+    await setDoc(userDocRef, updatedData, { merge: true });
+    console.log("User data updated in Firestore");
+  } catch (error) {
+    console.error("Error updating user in Firestore:", error.message);
+  }
+};
+
 export const createTask = async (taskData) => {
   try {
     const tasksCollectionRef = collection(db, "tasks");

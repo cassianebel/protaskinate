@@ -1,18 +1,25 @@
 import { useDraggable } from "@dnd-kit/core";
 import { NavLink } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
-import { LuMoveHorizontal } from "react-icons/lu";
+import { FiMove } from "react-icons/fi";
+import clsx from "clsx";
+import { usePriorityColors } from "./PriorityColorContext";
 
 const TaskCard = ({ task }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: task.id,
     data: { ...task },
   });
+  const { priorityColors } = usePriorityColors();
 
   return (
     <div
       ref={setNodeRef}
-      className={`${task.priority} ps-4 my-6 rounded-md shadow-md`}
+      className={clsx(
+        "ps-4 my-6 rounded-md shadow-md",
+        priorityColors[task.priority],
+        task.priority
+      )}
     >
       <div className="flex gap-2 w-full bg-zinc-100 dark:bg-zinc-900 p-4 border-2 dark:border-1 rounded-lg">
         <div className="w-full self-center">
@@ -39,7 +46,7 @@ const TaskCard = ({ task }) => {
         <div className="flex flex-col justify-between gap-2">
           <div className="opacity-60 hover:opacity-90">
             <NavLink to={`/edit/${task.id}`}>
-              <FaPencilAlt />
+              <FaPencilAlt /> <span className="sr-only">Edit Task</span>
             </NavLink>
           </div>
           <div
@@ -47,7 +54,10 @@ const TaskCard = ({ task }) => {
             {...attributes}
             className="text-2xl opacity-60 hover:opacity-90 cursor-grab"
           >
-            <LuMoveHorizontal />
+            <FiMove />{" "}
+            <span className="sr-only">
+              Drag task to update status (to-do, current/in-progress, completed)
+            </span>
           </div>
         </div>
       </div>
