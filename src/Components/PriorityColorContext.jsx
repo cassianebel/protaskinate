@@ -1,13 +1,29 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { fetchUserFromDatabase } from "../firestore";
 
 const PriorityColorContext = createContext();
 
-export function PriorityColorProvider({ children }) {
+export function PriorityColorProvider({ user, children }) {
   const [priorityColors, setPriorityColors] = useState({
     low: "purple",
     medium: "purple",
     high: "purple",
   });
+
+  useEffect(() => {
+    if (user) {
+      fetchUserFromDatabase(user)
+        .then((userData) => {
+          if (userData && userData.priorityColors) {
+            setPriorityColors(userData.priorityColors);
+          }
+          console.log("User data fetched successfully:", userData);
+        })
+        .catch((error) => {
+          console.error("An error occurred:", error);
+        });
+    }
+  }, [user]);
 
   const updatePriorityColor = (priority, color) => {
     setPriorityColors((prev) => ({ ...prev, [priority]: color }));

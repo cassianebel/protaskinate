@@ -18,7 +18,8 @@ const TaskCard = ({ task }) => {
       className={clsx(
         "ps-4 my-6 rounded-md shadow-md",
         priorityColors[task.priority],
-        task.priority
+        task.priority,
+        task.status === "completed" && "opacity-50"
       )}
     >
       <div className="flex gap-2 w-full bg-zinc-100 dark:bg-zinc-900 p-4 border-2 dark:border-1 rounded-lg">

@@ -4,6 +4,8 @@ import { fetchTask, updateTask } from "../firestore";
 import Input from "./Input";
 import Button from "./Button";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import clsx from "clsx";
+import { usePriorityColors } from "./PriorityColorContext";
 
 const EditTaskForm = ({ user }) => {
   const { taskId } = useParams();
@@ -14,6 +16,7 @@ const EditTaskForm = ({ user }) => {
   const [taskPriority, setTaskPriority] = useState("low");
   const [taskStatus, setTaskStatus] = useState("to-do");
   const navigate = useNavigate();
+  const { priorityColors } = usePriorityColors();
 
   useEffect(() => {
     if (user) {
@@ -23,7 +26,7 @@ const EditTaskForm = ({ user }) => {
             setTaskOwner(task.data().userId);
             setTaskTitle(task.data().title);
             setTaskDescription(task.data().description || "");
-            setTaskDueDate(task.data().dueDate || null);
+            setTaskDueDate(task.data().dueDate || "");
             setTaskPriority(task.data().priority);
             setTaskStatus(task.data().status);
           } else {
@@ -56,13 +59,17 @@ const EditTaskForm = ({ user }) => {
       lastModifiedTimestamp: new Date(),
     };
 
-    try {
-      await updateTask(taskId, updatedTask);
-      console.log("Task updated successfully!");
-      navigate("/");
-    } catch (error) {
-      console.error("Error updating task:", error);
+    const task = await fetchTask(taskId);
+    if (task.data().status != "completed" && taskStatus == "completed") {
+      updatedTask.completedTimestamp = new Date();
     }
+    if (task.data().status != "in-progress" && taskStatus == "in-progress") {
+      updatedTask.startedTimestamp = new Date();
+    }
+
+    await updateTask(taskId, updatedTask);
+    console.log("Task updated successfully!");
+    navigate("/");
   };
 
   return (
@@ -104,7 +111,10 @@ const EditTaskForm = ({ user }) => {
           <div className="grid grid-cols-3 ">
             <div>
               <label
-                className="bg-yellow-200 dark:bg-yellow-500 dark:text-zinc-950 block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md low",
+                  priorityColors["low"]
+                )}
                 htmlFor="low"
               >
                 <input
@@ -121,7 +131,10 @@ const EditTaskForm = ({ user }) => {
             </div>
             <div>
               <label
-                className="bg-orange-300 dark:bg-orange-700 dark:text-white  block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md medium",
+                  priorityColors["medium"]
+                )}
                 htmlFor="medium"
               >
                 <input
@@ -138,7 +151,10 @@ const EditTaskForm = ({ user }) => {
             </div>
             <div>
               <label
-                className="bg-red-400 dark:bg-red-700 dark:text-zinc-50  block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
+                  priorityColors["high"]
+                )}
                 htmlFor="high"
               >
                 <input

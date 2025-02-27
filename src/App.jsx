@@ -9,10 +9,11 @@ import Home from "./Components/Home";
 import Profile from "./Components/Profile";
 import { IoInvertMode } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaCirclePlus, FaChartPie } from "react-icons/fa6";
 import CreateTaskForm from "./Components/CreateTaskForm";
 import EditTaskForm from "./Components/EditTaskForm";
 import { PriorityColorProvider } from "./Components/PriorityColorContext.jsx";
+import Stats from "./Components/Stats.jsx";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -36,9 +37,9 @@ function App() {
   };
 
   return (
-    <PriorityColorProvider>
+    <PriorityColorProvider user={user}>
       <div className={theme}>
-        <div className="bg-zinc-200 dark:bg-zinc-950 text:zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between">
+        <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between">
           <header className="sticky top-0 flex items-center justify-between w-full bg-zinc-100 dark:bg-zinc-900 py-1 px-3">
             <h1>
               <NavLink
@@ -48,14 +49,21 @@ function App() {
                 protaskinate
               </NavLink>
             </h1>
-            <nav className="flex items-center gap-2 text-2xl">
-              <button onClick={toggleTheme} className=" px-4 py-2 rounded-full">
+            <nav className="flex items-center gap-6 text-2xl">
+              <button onClick={toggleTheme} className="p-2">
                 <IoInvertMode />
                 <span className="sr-only">Toggle Theme</span>
               </button>
-              <NavLink to="/profile">
-                <FaUserCircle />
-              </NavLink>
+              <div>
+                <NavLink to="/stats">
+                  <FaChartPie />
+                </NavLink>
+              </div>
+              <div>
+                <NavLink to="/profile">
+                  <FaUserCircle />
+                </NavLink>
+              </div>
             </nav>
           </header>
 
@@ -69,6 +77,10 @@ function App() {
             <Route
               path="/edit/:taskId"
               element={<EditTaskForm user={user} />}
+            />
+            <Route
+              path="/stats"
+              element={<Stats user={user} theme={theme} />}
             />
           </Routes>
           <footer className="sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 flex items-center justify-center text-3xl">

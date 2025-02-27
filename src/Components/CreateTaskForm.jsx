@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 import { createTask } from "../firestore";
+import clsx from "clsx";
+import { usePriorityColors } from "./PriorityColorContext";
 
 const CreateTaskForm = ({ user }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -11,6 +13,7 @@ const CreateTaskForm = ({ user }) => {
   const [taskPriority, setTaskPriority] = useState("low");
   const [taskStatus, setTaskStatus] = useState("to-do");
   const navigate = useNavigate();
+  const { priorityColors } = usePriorityColors();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,7 +90,10 @@ const CreateTaskForm = ({ user }) => {
           <div className="grid grid-cols-3 ">
             <div>
               <label
-                className="bg-yellow-200 dark:bg-yellow-500 dark:text-zinc-950 block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md low",
+                  priorityColors["low"]
+                )}
                 htmlFor="low"
               >
                 <input
@@ -104,7 +110,10 @@ const CreateTaskForm = ({ user }) => {
             </div>
             <div>
               <label
-                className="bg-orange-300 dark:bg-orange-700 dark:text-white  block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md medium",
+                  priorityColors["medium"]
+                )}
                 htmlFor="medium"
               >
                 <input
@@ -121,7 +130,10 @@ const CreateTaskForm = ({ user }) => {
             </div>
             <div>
               <label
-                className="bg-red-400 dark:bg-red-700 dark:text-zinc-50  block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md"
+                className={clsx(
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
+                  priorityColors["high"]
+                )}
                 htmlFor="high"
               >
                 <input

@@ -43,9 +43,13 @@ const Home = ({ user }) => {
   useEffect(() => {
     if (tasks.length > 0) {
       let completed = tasks.filter((task) => task.status === "completed");
+      // Sort by completedTimestamp or lastModifiedTimestamp if none (latest first)
+      completed.sort((a, b) => {
+        return b.completedTimestamp - a.completedTimestamp;
+      });
+
       let toDo = tasks.filter((task) => task.status === "to-do");
-      let inProgress = tasks.filter((task) => task.status === "in-progress");
-      // Sort tasks by priority
+      // Sort tasks by priority and due date
       const priorityOrder = { high: 1, medium: 2, low: 3 };
       toDo.sort((a, b) => {
         // First, sort by priority
@@ -64,6 +68,9 @@ const Home = ({ user }) => {
 
         return 0;
       });
+
+      let inProgress = tasks.filter((task) => task.status === "in-progress");
+      // Sort tasks by priority and due date
       inProgress.sort((a, b) => {
         // First, sort by priority
         const progressPriorityDiff =
@@ -102,10 +109,24 @@ const Home = ({ user }) => {
     if (activeTask.status !== newStatus) {
       // Update Firestore
       const taskRef = doc(db, "tasks", taskId);
-      await updateDoc(taskRef, {
-        status: newStatus,
-        lastModifiedTimestamp: new Date(),
-      });
+      if (newStatus === "completed") {
+        await updateDoc(taskRef, {
+          status: newStatus,
+          lastModifiedTimestamp: new Date(),
+          completedTimestamp: new Date(),
+        });
+      } else if (newStatus === "in-progress") {
+        await updateDoc(taskRef, {
+          status: newStatus,
+          lastModifiedTimestamp: new Date(),
+          startedTimestamp: new Date(),
+        });
+      } else {
+        await updateDoc(taskRef, {
+          status: newStatus,
+          lastModifiedTimestamp: new Date(),
+        });
+      }
 
       // Update local state
       setTasks((prevTasks) =>
