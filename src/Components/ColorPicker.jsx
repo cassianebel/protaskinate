@@ -1,10 +1,11 @@
-import { useEffect } from "react";
-import { usePriorityColors } from "./PriorityColorContext";
+import { useEffect, useState } from "react";
+import { usePriorityColors } from "../context/PriorityColorContext";
 import { fetchUserFromDatabase, updateUserInDatabase } from "../firestore";
 import Button from "./Button";
 import clsx from "clsx";
 
 function ColorPicker({ user }) {
+  const [status, setStatus] = useState("idle");
   const { priorityColors, setPriorityColors } = usePriorityColors();
   const priorityOrder = ["low", "medium", "high"];
   const colorChoices = [
@@ -26,7 +27,6 @@ function ColorPicker({ user }) {
           if (userData && userData.priorityColors) {
             setPriorityColors(userData.priorityColors);
           }
-          console.log("User data fetched successfully:", userData);
         })
         .catch((error) => {
           console.error("An error occurred:", error);
@@ -43,14 +43,20 @@ function ColorPicker({ user }) {
 
   const submitColorChange = async (e) => {
     e.preventDefault();
+    setStatus("saving");
     if (user) {
       try {
         await updateUserInDatabase(user, { priorityColors });
-        console.log("Priority colors updated successfully");
       } catch (error) {
         console.error("Error updating priority colors:", error);
       }
     }
+    setStatus("saved");
+
+    // Reset back to "Submit" after 2 seconds
+    setTimeout(() => {
+      setStatus("idle");
+    }, 2000);
   };
 
   return (
@@ -83,7 +89,17 @@ function ColorPicker({ user }) {
           </div>
         </div>
       ))}
-      <Button type="submit" text="Save Color Choices" style="primary" />
+      <Button
+        type="submit"
+        text={
+          status === "saving"
+            ? "Saving..."
+            : status === "saved"
+            ? "Saved!"
+            : "Save Color Choices"
+        }
+        style="primary"
+      />
     </form>
   );
 }

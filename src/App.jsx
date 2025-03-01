@@ -12,7 +12,8 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus, FaChartPie } from "react-icons/fa6";
 import CreateTaskForm from "./Components/CreateTaskForm";
 import EditTaskForm from "./Components/EditTaskForm";
-import { PriorityColorProvider } from "./Components/PriorityColorContext.jsx";
+import { PriorityColorProvider } from "./context/PriorityColorContext.jsx";
+import { CategoriesProvider } from "./context/CategoriesContext";
 import Stats from "./Components/Stats.jsx";
 
 function App() {
@@ -37,60 +38,66 @@ function App() {
   };
 
   return (
-    <PriorityColorProvider user={user}>
-      <div className={theme}>
-        <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between">
-          <header className="sticky top-0 flex items-center justify-between w-full bg-zinc-100 dark:bg-zinc-900 py-1 px-3">
-            <h1>
-              <NavLink
-                to="/"
-                className="text-xl md:text-2xl lg:text-3xl font-bold"
-              >
-                protaskinate
-              </NavLink>
-            </h1>
-            <nav className="flex items-center gap-6 text-2xl">
-              <button onClick={toggleTheme} className="p-2">
-                <IoInvertMode />
-                <span className="sr-only">Toggle Theme</span>
-              </button>
-              <div>
-                <NavLink to="/stats">
-                  <FaChartPie />
+    <CategoriesProvider user={user}>
+      <PriorityColorProvider user={user}>
+        <div className={theme}>
+          <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between md:justify-start gap-10">
+            <header className="sticky top-0  w-full bg-zinc-100 dark:bg-zinc-900 py-1 px-3">
+              <div className="max-w-[1700px] flex items-center justify-between mx-auto">
+                <h1>
+                  <NavLink
+                    to="/"
+                    className="text-xl md:text-2xl lg:text-3xl font-bold"
+                  >
+                    protaskinate
+                  </NavLink>
+                </h1>
+                <NavLink to="/create" className="hidden md:block text-2xl p-2">
+                  <FaCirclePlus />
+                  <span className="sr-only">Create New Task</span>
                 </NavLink>
+                <nav className="flex items-center gap-6 text-2xl">
+                  <button onClick={toggleTheme} className="p-2">
+                    <IoInvertMode />
+                    <span className="sr-only">Toggle Theme</span>
+                  </button>
+                  <NavLink to="/stats" className="p-2">
+                    <FaChartPie />
+                    <span className="sr-only">Analytics</span>
+                  </NavLink>
+                  <NavLink to="/profile" className="p-2">
+                    <FaUserCircle />
+                    <span className="sr-only">Profile</span>
+                  </NavLink>
+                </nav>
               </div>
-              <div>
-                <NavLink to="/profile">
-                  <FaUserCircle />
-                </NavLink>
-              </div>
-            </nav>
-          </header>
+            </header>
 
-          <Routes>
-            <Route path="/" element={<Home user={user} />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signout" element={<SignOut />} />
-            <Route path="/profile" element={<Profile user={user} />} />
-            <Route path="/create" element={<CreateTaskForm user={user} />} />
-            <Route
-              path="/edit/:taskId"
-              element={<EditTaskForm user={user} />}
-            />
-            <Route
-              path="/stats"
-              element={<Stats user={user} theme={theme} />}
-            />
-          </Routes>
-          <footer className="sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 flex items-center justify-center text-3xl">
-            <NavLink to="/create">
-              <FaCirclePlus />
-            </NavLink>
-          </footer>
+            <Routes>
+              <Route path="/" element={<Home user={user} />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/signout" element={<SignOut />} />
+              <Route path="/profile" element={<Profile user={user} />} />
+              <Route path="/create" element={<CreateTaskForm user={user} />} />
+              <Route
+                path="/edit/:taskId"
+                element={<EditTaskForm user={user} />}
+              />
+              <Route
+                path="/stats"
+                element={<Stats user={user} theme={theme} />}
+              />
+            </Routes>
+            <footer className="md:hidden sticky bottom-0 w-full bg-zinc-100 dark:bg-zinc-900 p-3 flex items-center justify-center text-3xl">
+              <NavLink to="/create">
+                <FaCirclePlus />
+              </NavLink>
+            </footer>
+          </div>
         </div>
-      </div>
-    </PriorityColorProvider>
+      </PriorityColorProvider>
+    </CategoriesProvider>
   );
 }
 

@@ -17,7 +17,6 @@ export function PriorityColorProvider({ user, children }) {
           if (userData && userData.priorityColors) {
             setPriorityColors(userData.priorityColors);
           }
-          console.log("User data fetched successfully:", userData);
         })
         .catch((error) => {
           console.error("An error occurred:", error);

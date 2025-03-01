@@ -1,6 +1,8 @@
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import ColorPicker from "./ColorPicker";
+import CategoriesManager from "./CategoriesManager";
+import SettingsPanel from "./SettingsPanel";
 
 const Profile = ({ user }) => {
   return (
@@ -16,13 +18,13 @@ const Profile = ({ user }) => {
             <SignOut />
           </div>
 
-          <div>
-            <h3 className="text-center text-2xl font-bold">
-              Customize Your Colors!
-            </h3>
-            <div>
+          <div className="flex flex-col gap-12 lg:flex-row xl:gap-24">
+            <SettingsPanel heading="Customize Task Colors">
               <ColorPicker user={user} />
-            </div>
+            </SettingsPanel>
+            <SettingsPanel heading="Manage Categories">
+              <CategoriesManager />
+            </SettingsPanel>
           </div>
         </>
       ) : (

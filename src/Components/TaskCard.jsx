@@ -3,7 +3,10 @@ import { NavLink } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
 import { FiMove } from "react-icons/fi";
 import clsx from "clsx";
-import { usePriorityColors } from "./PriorityColorContext";
+import { usePriorityColors } from "../context/PriorityColorContext";
+import { useCategories } from "../context/CategoriesContext";
+import * as dateFns from "date-fns";
+import { LuCalendarClock } from "react-icons/lu";
 
 const TaskCard = ({ task }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -11,6 +14,16 @@ const TaskCard = ({ task }) => {
     data: { ...task },
   });
   const { priorityColors } = usePriorityColors();
+  const { categories } = useCategories();
+
+  const formattedDueDate = task.dueDate
+    ? dateFns.format(
+        typeof task.dueDate === "string"
+          ? dateFns.parseISO(task.dueDate)
+          : task.dueDate,
+        "MMM d"
+      )
+    : "No Due Date";
 
   return (
     <div
@@ -28,21 +41,26 @@ const TaskCard = ({ task }) => {
           <p className="my-2 text-zinc-600 dark:text-zinc-400">
             {task.description}
           </p>
-          <div className="flex justify-between items-center">
-            {task.dueDate && (
-              <p className="font-light mt-2 shrink-0">
-                Due: {new Date(task.dueDate).toString().slice(0, 10)}
-              </p>
-            )}
-            {/* <ul className="mt-3 flex flex-wrap justify-end gap-3">
-          <li className="inline-flex items-center bg-blue-200 dark:bg-blue-800 px-3 pb-1 rounded-full text-sm">
-            work
-          </li>
-          <li className="inline-block bg-green-200 dark:bg-green-800 px-3 pb-1 rounded-full text-sm">
-            tag two
-          </li>
-            </ul> */}
-          </div>
+          {task.dueDate && (
+            <p className="flex gap-2 items-center font-light mt-2 shrink-0">
+              <LuCalendarClock className="text-xl" /> {formattedDueDate}
+            </p>
+          )}
+          {task.categories && (
+            <ul className="mt-3 flex flex-wrap gap-3">
+              {task.categories
+                .map((cat) => categories.filter((c) => c.id === cat)) // Get all matching categories
+                .flat() // Flatten array in case `filter` returns nested arrays
+                .map((category) => (
+                  <li
+                    key={category.id}
+                    className={`text-sm px-3 pt-1 pb-2 rounded-full ${category.color} category`}
+                  >
+                    {category.name}
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
         <div className="flex flex-col justify-between gap-2">
           <div className="opacity-60 hover:opacity-90">

@@ -6,31 +6,35 @@ import colorCodes from "../colors";
 // Register necessary chart elements
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PriorityDonutChart = ({ tasks, theme, heading }) => {
+const StatusDonutChart = ({ tasks, theme }) => {
   const { priorityColors } = usePriorityColors();
   // Define colors for each priority level
   const colors = {
-    low: colorCodes[theme + "low" + priorityColors.low],
-    medium: colorCodes[theme + "medium" + priorityColors.medium],
-    high: colorCodes["high" + priorityColors.high],
+    todo: colorCodes.todo,
+    inprogress: colorCodes.inprogress,
+    completed: colorCodes.completed,
   };
   console.log(colorCodes);
-  // Count tasks by priority
-  const priorityCounts = tasks.reduce(
+  // Count tasks by status
+  const statusCounts = tasks.reduce(
     (acc, task) => {
-      acc[task.priority] = (acc[task.priority] || 0) + 1;
+      acc[task.status] = (acc[task.status] || 0) + 1;
       return acc;
     },
-    { low: 0, medium: 0, high: 0 }
+    { "to-do": 0, inProgress: 0, completed: 0 }
   );
 
   // Data for Chart.js
   const data = {
-    labels: ["Low", "Medium", "High"],
+    labels: ["To-Do", "In Progress", "Completed"],
     datasets: [
       {
-        data: [priorityCounts.low, priorityCounts.medium, priorityCounts.high],
-        backgroundColor: [colors.low, colors.medium, colors.high],
+        data: [
+          statusCounts["to-do"],
+          statusCounts.inProgress,
+          statusCounts.completed,
+        ],
+        backgroundColor: [colors.todo, colors.inprogress, colors.completed],
         borderWidth: 0,
       },
     ],
@@ -51,10 +55,12 @@ const PriorityDonutChart = ({ tasks, theme, heading }) => {
 
   return (
     <div className="w-64">
-      <h3 className="text-center text-lg font-semibold mb-2">{heading}</h3>
+      <h3 className="text-center text-lg font-semibold mb-2">
+        Tasks by Status
+      </h3>
       <Doughnut data={data} options={options} />
     </div>
   );
 };
 
-export default PriorityDonutChart;
+export default StatusDonutChart;

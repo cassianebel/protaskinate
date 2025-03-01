@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
 import { createTask } from "../firestore";
 import clsx from "clsx";
-import { usePriorityColors } from "./PriorityColorContext";
+import { usePriorityColors } from "../context/PriorityColorContext";
+import { useCategories } from "../context/CategoriesContext";
 
 const CreateTaskForm = ({ user }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -12,8 +13,10 @@ const CreateTaskForm = ({ user }) => {
   const [taskDueDate, setTaskDueDate] = useState("");
   const [taskPriority, setTaskPriority] = useState("low");
   const [taskStatus, setTaskStatus] = useState("to-do");
+  const [taskCategories, setTaskCategories] = useState([]);
   const navigate = useNavigate();
   const { priorityColors } = usePriorityColors();
+  const { categories } = useCategories();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,11 +26,20 @@ const CreateTaskForm = ({ user }) => {
       description: taskDescription,
       dueDate: taskDueDate ? taskDueDate : null,
       priority: taskPriority,
+      categories: taskCategories,
       status: taskStatus,
       userId: user.uid,
       createdTimestamp: new Date(),
       lastModifiedTimestamp: new Date(),
     };
+
+    if (taskStatus === "completed") {
+      newTask.startedTimestamp = new Date();
+      newTask.completedTimestamp = new Date();
+    }
+    if (taskStatus === "in-progress") {
+      newTask.startedTimestamp = new Date();
+    }
 
     createTask(newTask)
       .then((docId) => {
@@ -37,6 +49,7 @@ const CreateTaskForm = ({ user }) => {
           setTaskDescription("");
           setTaskDueDate("");
           setTaskPriority("low");
+          setTaskCategories([]);
           setTaskStatus("to-do");
           //redirect to home page
           navigate(`/`);
@@ -149,6 +162,46 @@ const CreateTaskForm = ({ user }) => {
               </label>
             </div>
           </div>
+        </fieldset>
+        <fieldset className="mb-6">
+          <legend className="block mx-2 mb-1 font-light">Categories</legend>
+          {categories.length > 0 ? (
+            <div className="flex flex-wrap gap-4 ">
+              {categories.map((cat) => (
+                <div key={cat.id}>
+                  <label
+                    className={clsx(
+                      "block pt-1 pb-2 ps-3 pe-4 opacity-50 has-[:checked]:opacity-100 transition-all duration-300 ease-in-out font-medium rounded-full category",
+                      cat.color
+                    )}
+                    htmlFor={cat.name}
+                  >
+                    <input
+                      type="checkbox"
+                      id={cat.name}
+                      name={cat.name}
+                      value={cat.name}
+                      className="me-2"
+                      checked={taskCategories.includes(cat.name)}
+                      onChange={(e) =>
+                        setTaskCategories((prev) =>
+                          prev.includes(cat.name)
+                            ? prev.filter((c) => c !== cat.name)
+                            : [...prev, cat.name]
+                        )
+                      }
+                    />
+                    {cat.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="ms-4">
+              No categories available.
+              <NavLink to="/profile">Manage your categories here</NavLink>
+            </p>
+          )}
         </fieldset>
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Status</legend>

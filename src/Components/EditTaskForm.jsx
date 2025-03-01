@@ -1,11 +1,12 @@
 import { useState, useEffect, use } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchTask, updateTask } from "../firestore";
+import { fetchTask, updateTask, deleteTask } from "../firestore";
 import Input from "./Input";
 import Button from "./Button";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import clsx from "clsx";
-import { usePriorityColors } from "./PriorityColorContext";
+import { usePriorityColors } from "../context/PriorityColorContext";
+import { useCategories } from "../context/CategoriesContext";
 
 const EditTaskForm = ({ user }) => {
   const { taskId } = useParams();
@@ -14,9 +15,11 @@ const EditTaskForm = ({ user }) => {
   const [taskDescription, setTaskDescription] = useState("");
   const [taskDueDate, setTaskDueDate] = useState("");
   const [taskPriority, setTaskPriority] = useState("low");
+  const [taskCategories, setTaskCategories] = useState([]);
   const [taskStatus, setTaskStatus] = useState("to-do");
   const navigate = useNavigate();
   const { priorityColors } = usePriorityColors();
+  const { categories } = useCategories();
 
   useEffect(() => {
     if (user) {
@@ -28,6 +31,7 @@ const EditTaskForm = ({ user }) => {
             setTaskDescription(task.data().description || "");
             setTaskDueDate(task.data().dueDate || "");
             setTaskPriority(task.data().priority);
+            setTaskCategories(task.data().categories || []);
             setTaskStatus(task.data().status);
           } else {
             console.error("Failed to fetch task.");
@@ -55,6 +59,7 @@ const EditTaskForm = ({ user }) => {
       description: taskDescription,
       dueDate: taskDueDate ? taskDueDate : null,
       priority: taskPriority,
+      categories: taskCategories,
       status: taskStatus,
       lastModifiedTimestamp: new Date(),
     };
@@ -69,6 +74,20 @@ const EditTaskForm = ({ user }) => {
 
     await updateTask(taskId, updatedTask);
     console.log("Task updated successfully!");
+    navigate("/");
+  };
+
+  const handleDelete = async () => {
+    if (!user) {
+      console.error("You must be signed in to delete a task.");
+      return;
+    } else if (user.uid !== taskOwner) {
+      console.error("You do not have permission to delete this task.");
+      return;
+    }
+
+    await deleteTask(taskId);
+    console.log("Task deleted successfully!");
     navigate("/");
   };
 
@@ -172,6 +191,46 @@ const EditTaskForm = ({ user }) => {
           </div>
         </fieldset>
         <fieldset className="mb-6">
+          <legend className="block mx-2 mb-1 font-light">Categories</legend>
+          {categories.length > 0 ? (
+            <div className="flex flex-wrap gap-4 ">
+              {categories.map((cat) => (
+                <div key={cat.id}>
+                  <label
+                    className={clsx(
+                      "block pt-1 pb-2 ps-3 pe-4 opacity-50 has-[:checked]:opacity-100 transition-all duration-300 ease-in-out font-medium rounded-full category",
+                      cat.color
+                    )}
+                    htmlFor={cat.name}
+                  >
+                    <input
+                      type="checkbox"
+                      id={cat.name}
+                      name={cat.name}
+                      value={cat.name}
+                      className="me-2"
+                      checked={taskCategories.includes(cat.name)}
+                      onChange={(e) =>
+                        setTaskCategories((prev) =>
+                          prev.includes(cat.name)
+                            ? prev.filter((c) => c !== cat.name)
+                            : [...prev, cat.name]
+                        )
+                      }
+                    />
+                    {cat.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="ms-4">
+              No categories available.
+              <NavLink to="/profile">Manage your categories here</NavLink>
+            </p>
+          )}
+        </fieldset>
+        <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Status</legend>
           <div className="flex gap-4 ms-4">
             <div>
@@ -225,6 +284,14 @@ const EditTaskForm = ({ user }) => {
             style="inline"
             icon={<IoCloseCircleOutline />}
           />
+        </div>
+        <div className="flex gap-4 mt-4">
+          <Button
+            text="Cancel"
+            action={() => navigate("/")}
+            style="secondary"
+          />
+          <Button text="Delete" action={handleDelete} style="danger" />
         </div>
       </form>
     </div>

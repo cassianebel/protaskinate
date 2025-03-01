@@ -8,6 +8,7 @@ import {
   where,
   updateDoc,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -99,17 +100,57 @@ export const updateTask = async (taskId, updatedData) => {
   }
 };
 
-// Example of how to query tasks with a specific label
+export const deleteTask = async (taskId) => {
+  try {
+    const taskRef = doc(db, "tasks", taskId);
+    await deleteDoc(taskRef);
+  } catch (error) {
+    console.error("Error deleting task:", error);
+  }
+};
 
-// const workLabelRef = doc(db, "labels", "work"); // Get a reference to the "work" label doc.
+export const fetchCategories = async (userId) => {
+  const categoriesRef = collection(db, `users/${userId}/categories`);
+  const querySnapshot = await getDocs(categoriesRef);
+  return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
 
-// const q = query(
-//   collection(db, "tasks"),
-//   where("labels", "array-contains", workLabelRef)
-// );
+export const addCategory = async (userId, categoryName, color) => {
+  const sanitizedCategoryName = categoryName.replace(/[\/\.\#\[\]\s]/g, "");
 
-// const querySnapshot = await getDocs(q);
-// querySnapshot.forEach((doc) => {
-//   // Access task data here.
-//   console.log(doc.id, "=>", doc.data());
-// });
+  try {
+    const categoryRef = doc(
+      db,
+      "users",
+      userId,
+      "categories",
+      sanitizedCategoryName
+    );
+
+    const docSnapshot = await getDoc(categoryRef);
+    if (docSnapshot.exists()) {
+      console.log("Category already exists!");
+      return sanitizedCategoryName; // Return the existing ID
+    }
+
+    await setDoc(categoryRef, {
+      id: sanitizedCategoryName, // Store ID in Firestore
+      name: sanitizedCategoryName,
+      color,
+    });
+
+    return sanitizedCategoryName; // ✅ Return the ID
+  } catch (error) {
+    console.error("Error adding category:", error);
+    throw error; // Re-throw error to be caught in `addNewCategory`
+  }
+};
+
+export const deleteCategory = async (userId, categoryName) => {
+  try {
+    const categoryRef = doc(db, "users", userId, "categories", categoryName);
+    await deleteDoc(categoryRef);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+  }
+};

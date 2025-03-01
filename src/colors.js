@@ -44,6 +44,9 @@ const colorCodes = {
   lightmediumlime: "oklch(0.897 0.196 126.665)",
   darkmediumlime: "oklch(0.453 0.124 130.933)",
   highlime: "oklch(0.768 0.233 130.85)",
+  todo: "oklch(0.705 0.015 286.067)",
+  inprogress: "oklch(0.442 0.017 285.786)",
+  completed: "oklch(0.274 0.006 286.033)",
 };
 
 export default colorCodes;

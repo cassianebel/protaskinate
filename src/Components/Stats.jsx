@@ -4,6 +4,7 @@ import { doc } from "firebase/firestore";
 import { db } from "../firebase";
 import * as dateFns from "date-fns";
 import PriorityDonut from "./PriorityDonut";
+import StatusDonut from "./StatusDonut";
 
 const Stats = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,7 @@ const Stats = ({ user, theme }) => {
   const [lowPriorityTasks, setLowPriorityTasks] = useState([]);
   const [mediumPriorityTasks, setMediumPriorityTasks] = useState([]);
   const [highPriorityTasks, setHighPriorityTasks] = useState([]);
+  const [averageCompletionTime, setAverageCompletionTime] = useState(0);
   const today = new Date();
 
   useEffect(() => {
@@ -70,6 +72,23 @@ const Stats = ({ user, theme }) => {
       setTasksCompletedThisWeek(completedThisWeek.length);
       setTasksCompletedThisMonth(completedThisMonth.length);
       setTasksCompletedThisYear(completedThisYear.length);
+
+      let times = [];
+      const completionTimes = completed.map((task) => {
+        const completedTime = task.completedTimestamp.toDate();
+        const createdTime = task.createdTimestamp.toDate();
+        const time = dateFns.differenceInMinutes(completedTime, createdTime);
+        times.push(time);
+      });
+      const averageTime = times.reduce((a, b) => a + b, 0) / times.length;
+      if (averageTime > 60) {
+        const hours = Math.floor(averageTime / 60);
+        const minutes = Math.round(averageTime % 60);
+        setAverageCompletionTime(`${hours}h ${minutes}m`);
+      }
+      if (averageTime < 60) {
+        setAverageCompletionTime(`${Math.round(averageTime)}m`);
+      }
     }
   }, [tasks]);
 
@@ -85,7 +104,19 @@ const Stats = ({ user, theme }) => {
         {dateFns.format(today, "y")}: {tasksCompletedThisYear}
       </p>
       <p>total: {totalCompletedTasks}</p>
-      <PriorityDonut tasks={completedTasks} theme={theme} />
+      <p>average time spent per task: {averageCompletionTime}</p>
+      <PriorityDonut
+        tasks={completedTasks}
+        theme={theme}
+        heading="Completed Tasks by Priority"
+      />
+      <p>total tasks: {totalTasks}</p>
+      <PriorityDonut
+        tasks={tasks}
+        theme={theme}
+        heading="All Tasks by Priority"
+      />
+      <StatusDonut tasks={tasks} theme={theme} />
     </div>
   );
 };

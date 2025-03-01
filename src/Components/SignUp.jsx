@@ -18,7 +18,7 @@ function SignUp() {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/decks");
+      navigate("/");
     } catch (error) {
       console.log(error.code);
       console.error(error);

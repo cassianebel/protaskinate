@@ -175,3 +175,33 @@
     }
   }
 }
+
+.category {
+  &.yellow {
+    @apply bg-yellow-200 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  &.orange {
+    @apply bg-orange-200 text-orange-900 dark:bg-orange-900 dark:text-orange-200;
+  }
+  &.red {
+    @apply bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-200;
+  }
+  &.fuchsia {
+    @apply bg-fuchsia-200 text-fuchsia-900 dark:bg-fuchsia-900 dark:text-fuchsia-200;
+  }
+  &.purple {
+    @apply bg-purple-200 text-purple-900 dark:bg-purple-900 dark:text-purple-200;
+  }
+  &.blue {
+    @apply bg-blue-200 text-blue-900 dark:bg-blue-900 dark:text-blue-200;
+  }
+  &.teal {
+    @apply bg-teal-200 text-teal-900 dark:bg-teal-900 dark:text-teal-200;
+  }
+  &.green {
+    @apply bg-green-200 text-green-900 dark:bg-green-900 dark:text-green-200;
+  }
+  &.lime {
+    @apply bg-lime-200 text-lime-900 dark:bg-lime-900 dark:text-lime-200;
+  }
+}
