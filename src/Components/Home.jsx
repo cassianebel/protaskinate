@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import Link from "./Link";
 import { fetchUsersTasks } from "../firestore";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import {
   DndContext,
@@ -40,6 +47,25 @@ const Home = ({ user }) => {
   const [dateFilter, setDateFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { categories } = useCategories();
+
+  // useEffect(() => {
+  //   if (!user) return;
+
+  //   const tasksRef = collection(db, "users", user.uid, "tasks");
+  //   const q = query(tasksRef);
+
+  //   // Set up Firestore listener
+  //   const unsubscribe = onSnapshot(q, (snapshot) => {
+  //     const updatedTasks = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setTasks(updatedTasks);
+  //   });
+
+  //   // Cleanup listener on unmount
+  //   return () => unsubscribe();
+  // }, [user]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -292,10 +318,12 @@ const Home = ({ user }) => {
       ) : (
         <div>
           <div className="flex flex-col items-center justify-center">
-            <div className="flex flex-col md:flex-row gap-8 mb-4 justify-center items-center">
+            <div className="flex flex-col md:flex-row gap-8 mb-4 justify-center items-center mx-10">
               {categories.length > 0 ? (
                 <div className="flex gap-2 items-center">
-                  <label>Filter by Category</label>
+                  <label className="text-end leading-5">
+                    Filter by Category
+                  </label>
                   <select
                     onChange={(e) => setCategoryFilter(e.target.value)}
                     className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"
@@ -310,7 +338,7 @@ const Home = ({ user }) => {
                 </div>
               ) : null}
               <div className="flex gap-2 items-center">
-                <label>Filter by Priority</label>
+                <label className="text-end leading-5">Filter by Priority</label>
                 <select
                   onChange={(e) => setPriorityFilter(e.target.value)}
                   className="bg-zinc-50 dark:bg-zinc-800  border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"
@@ -322,7 +350,7 @@ const Home = ({ user }) => {
                 </select>
               </div>
               <div className="flex gap-2 items-center">
-                <label>Filter by Due Date</label>
+                <label className="text-end leading-5">Filter by Due Date</label>
                 <select
                   onChange={(e) => setDateFilter(e.target.value)}
                   className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"

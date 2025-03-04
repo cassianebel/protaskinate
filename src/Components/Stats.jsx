@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import * as dateFns from "date-fns";
 import PriorityDonut from "./PriorityDonut";
 import StatusDonut from "./StatusDonut";
+import Stat from "./Stat";
 
 const Stats = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
@@ -51,7 +52,11 @@ const Stats = ({ user, theme }) => {
       });
 
       setCompletedTasks(completed);
-      setTotalCompletedTasks(completed.length);
+      animateNums(
+        completed.length,
+        totalCompletedTasks,
+        setTotalCompletedTasks
+      );
       setTotalTasks(tasks.length);
 
       const completedToday = completed.filter((task) =>
@@ -68,55 +73,92 @@ const Stats = ({ user, theme }) => {
         dateFns.isSameYear(task.completedTimestamp.toDate(), today)
       );
 
-      setTasksCompletedToday(completedToday.length);
-      setTasksCompletedThisWeek(completedThisWeek.length);
-      setTasksCompletedThisMonth(completedThisMonth.length);
-      setTasksCompletedThisYear(completedThisYear.length);
+      animateNums(
+        completedToday.length,
+        tasksCompletedToday,
+        setTasksCompletedToday
+      );
+      animateNums(
+        completedThisWeek.length,
+        tasksCompletedThisWeek,
+        setTasksCompletedThisWeek
+      );
+      animateNums(
+        completedThisMonth.length,
+        tasksCompletedThisMonth,
+        setTasksCompletedThisMonth
+      );
+      animateNums(
+        completedThisYear.length,
+        tasksCompletedThisYear,
+        setTasksCompletedThisYear
+      );
 
-      let times = [];
-      const completionTimes = completed.map((task) => {
-        const completedTime = task.completedTimestamp.toDate();
-        const createdTime = task.createdTimestamp.toDate();
-        const time = dateFns.differenceInMinutes(completedTime, createdTime);
-        times.push(time);
-      });
-      const averageTime = times.reduce((a, b) => a + b, 0) / times.length;
-      if (averageTime > 60) {
-        const hours = Math.floor(averageTime / 60);
-        const minutes = Math.round(averageTime % 60);
-        setAverageCompletionTime(`${hours}h ${minutes}m`);
-      }
-      if (averageTime < 60) {
-        setAverageCompletionTime(`${Math.round(averageTime)}m`);
-      }
+      // let times = [];
+      // const completionTimes = completed.map((task) => {
+      //   const completedTime = task.completedTimestamp.toDate();
+      //   const createdTime = task.createdTimestamp.toDate();
+      //   const time = dateFns.differenceInMinutes(completedTime, createdTime);
+      //   times.push(time);
+      // });
+      // const averageTime = times.reduce((a, b) => a + b, 0) / times.length;
+      // if (averageTime > 60) {
+      //   const hours = Math.floor(averageTime / 60);
+      //   const minutes = Math.round(averageTime % 60);
+      //   setAverageCompletionTime(`${hours}h ${minutes}m`);
+      // }
+      // if (averageTime < 60) {
+      //   setAverageCompletionTime(`${Math.round(averageTime)}m`);
+      // }
     }
   }, [tasks]);
 
+  const animateNums = (num, setVal, setter) => {
+    setTimeout(() => {
+      setter(setVal++);
+      if (num === setVal) return;
+      return animateNums(num, setVal, setter);
+    }, 30);
+  };
+
   return (
     <div>
-      <h2 className="text-2xl text-center font-bold mb-4">Statistics</h2>
-      <p>today: {tasksCompletedToday}</p>
-      <p>this week: {tasksCompletedThisWeek}</p>
-      <p>
-        {dateFns.format(today, "MMMM")}: {tasksCompletedThisMonth}
-      </p>
-      <p>
-        {dateFns.format(today, "y")}: {tasksCompletedThisYear}
-      </p>
-      <p>total: {totalCompletedTasks}</p>
-      <p>average time spent per task: {averageCompletionTime}</p>
-      <PriorityDonut
-        tasks={completedTasks}
-        theme={theme}
-        heading="Completed Tasks by Priority"
-      />
-      <p>total tasks: {totalTasks}</p>
-      <PriorityDonut
-        tasks={tasks}
-        theme={theme}
-        heading="All Tasks by Priority"
-      />
-      <StatusDonut tasks={tasks} theme={theme} />
+      <h2 className="text-2xl text-center font-bold mb-20">Analytics</h2>
+      <h3 className="text-lg text-center font-bold mb-4">Completed Tasks</h3>
+      <div className="flex flex-row flex-wrap gap-10 items-center justify-center mx-10 mb-20">
+        <Stat text="today" number={tasksCompletedToday} />
+        <Stat text="this week" number={tasksCompletedThisWeek} />
+        <Stat
+          text={dateFns.format(today, "MMMM")}
+          number={tasksCompletedThisMonth}
+        />
+        <Stat
+          text={dateFns.format(today, "y")}
+          number={tasksCompletedThisYear}
+        />
+        <Stat text="total" number={totalCompletedTasks} />
+      </div>
+      {/* <p className="text-center m-10">
+        <span className="block text-6xl font-black">
+          {averageCompletionTime}
+        </span>{" "}
+        average time spent per task
+      </p> */}
+      <div className="flex flex-col lg:flex-row gap-10 items-center justify-center m-10">
+        <StatusDonut tasks={tasks} theme={theme} />
+        <div className="flex flex-col md:flex-row gap-10">
+          <PriorityDonut
+            tasks={tasks}
+            theme={theme}
+            heading="ALL Tasks by Priority"
+          />
+          <PriorityDonut
+            tasks={completedTasks}
+            theme={theme}
+            heading="COMPLETED Tasks by Priority"
+          />
+        </div>
+      </div>
     </div>
   );
 };

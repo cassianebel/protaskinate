@@ -14,7 +14,6 @@ const StatusDonutChart = ({ tasks, theme }) => {
     inprogress: colorCodes.inprogress,
     completed: colorCodes.completed,
   };
-  console.log(colorCodes);
   // Count tasks by status
   const statusCounts = tasks.reduce(
     (acc, task) => {

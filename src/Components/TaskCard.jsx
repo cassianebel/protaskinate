@@ -7,6 +7,7 @@ import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
 import * as dateFns from "date-fns";
 import { LuCalendarClock } from "react-icons/lu";
+import { FaCircleCheck } from "react-icons/fa6";
 
 const TaskCard = ({ task }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -31,13 +32,17 @@ const TaskCard = ({ task }) => {
       className={clsx(
         "ps-4 my-6 rounded-md shadow-md",
         priorityColors[task.priority],
-        task.priority,
-        task.status === "completed" && "opacity-50"
+        task.priority
       )}
     >
       <div className="flex gap-2 w-full bg-zinc-100 dark:bg-zinc-900 p-4 border-2 dark:border-1 rounded-lg">
         <div className="w-full self-center">
-          <h3 className="text-xl font-medium">{task.title}</h3>
+          <h3 className="text-xl font-medium">
+            {task.status == "completed" && (
+              <FaCircleCheck className="inline me-2 -mt-1" />
+            )}
+            {task.title}
+          </h3>
           <p className="my-2 text-zinc-600 dark:text-zinc-400">
             {task.description}
           </p>

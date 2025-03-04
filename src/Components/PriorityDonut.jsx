@@ -14,7 +14,7 @@ const PriorityDonutChart = ({ tasks, theme, heading }) => {
     medium: colorCodes[theme + "medium" + priorityColors.medium],
     high: colorCodes["high" + priorityColors.high],
   };
-  console.log(colorCodes);
+  // console.log(colorCodes);
   // Count tasks by priority
   const priorityCounts = tasks.reduce(
     (acc, task) => {
@@ -51,7 +51,7 @@ const PriorityDonutChart = ({ tasks, theme, heading }) => {
 
   return (
     <div className="w-64">
-      <h3 className="text-center text-lg font-semibold mb-2">{heading}</h3>
+      <h3 className="text-center text-lg font-bold mb-2">{heading}</h3>
       <Doughnut data={data} options={options} />
     </div>
   );

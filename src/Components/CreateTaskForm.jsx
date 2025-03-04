@@ -7,10 +7,12 @@ import clsx from "clsx";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
 
-const CreateTaskForm = ({ user }) => {
+const CreateTaskForm = ({ user, date, closeModal }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const [taskDueDate, setTaskDueDate] = useState("");
+  const [taskDueDate, setTaskDueDate] = useState(
+    date ? date.toISOString().split("T")[0] : null
+  );
   const [taskPriority, setTaskPriority] = useState("low");
   const [taskStatus, setTaskStatus] = useState("to-do");
   const [taskCategories, setTaskCategories] = useState([]);
@@ -51,8 +53,7 @@ const CreateTaskForm = ({ user }) => {
           setTaskPriority("low");
           setTaskCategories([]);
           setTaskStatus("to-do");
-          //redirect to home page
-          navigate(`/`);
+          closeModal ? closeModal() : navigate("/");
         } else {
           console.error("Failed to add task.");
         }
