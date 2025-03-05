@@ -16,9 +16,9 @@ import { PriorityColorProvider } from "./context/PriorityColorContext.jsx";
 import { CategoriesProvider } from "./context/CategoriesContext";
 import Stats from "./Components/Stats.jsx";
 import { LuCalendarDays } from "react-icons/lu";
-import CalendarView from "./Components/CalendarView.jsx";
 import { BsKanban } from "react-icons/bs";
 import Modal from "./Components/Modal";
+import CalendarGrid from "./Components/CalendarGrid.jsx";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -65,19 +65,16 @@ function App() {
                     protaskinate
                   </NavLink>
                 </h1>
-                <button
-                  onClick={() => openModal()}
-                  className="hidden md:block text-2xl p-2"
-                >
-                  <FaCirclePlus />
-                  <span className="sr-only">Create New Task</span>
-                </button>
 
                 <nav className="flex items-center gap-6 text-2xl">
-                  <button onClick={toggleTheme} className="p-2">
-                    <IoInvertMode />
-                    <span className="sr-only">Toggle Theme</span>
+                  <button
+                    onClick={() => openModal()}
+                    className="hidden md:block text-2xl p-2"
+                  >
+                    <FaCirclePlus />
+                    <span className="sr-only">Create New Task</span>
                   </button>
+
                   <NavLink to="/" className="p-2">
                     <BsKanban />
                     <span className="sr-only">KanBan Board</span>
@@ -94,6 +91,10 @@ function App() {
                     <FaUserCircle />
                     <span className="sr-only">Profile</span>
                   </NavLink>
+                  <button onClick={toggleTheme} className="p-2">
+                    <IoInvertMode />
+                    <span className="sr-only">Toggle Theme</span>
+                  </button>
                 </nav>
               </div>
             </header>
@@ -115,7 +116,7 @@ function App() {
               />
               <Route
                 path="/calendar"
-                element={<CalendarView user={user} theme={theme} />}
+                element={<CalendarGrid user={user} theme={theme} />}
               />
             </Routes>
             <Modal isOpen={isModalOpen} onClose={closeModal}>

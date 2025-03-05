@@ -48,43 +48,40 @@ const Home = ({ user }) => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { categories } = useCategories();
 
-  // useEffect(() => {
-  //   if (!user) return;
-
-  //   const tasksRef = collection(db, "users", user.uid, "tasks");
-  //   const q = query(tasksRef);
-
-  //   // Set up Firestore listener
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     const updatedTasks = snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setTasks(updatedTasks);
-  //   });
-
-  //   // Cleanup listener on unmount
-  //   return () => unsubscribe();
-  // }, [user]);
-
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (user) {
-        try {
-          const tasks = await fetchUsersTasks(user.uid);
-          setTasks(tasks);
-          setLoading(false);
-        } catch (error) {
-          setError(error.message);
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
+    if (!user) return;
 
-    fetchTasks();
+    const tasksRef = collection(db, "tasks");
+    const q = query(tasksRef, where("userId", "==", user.uid));
+
+    // Set up Firestore listener
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const tasks = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setTasks(tasks);
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
   }, [user]);
+
+  // useEffect(() => {
+  //   const fetchTasks = async () => {
+  //     if (user) {
+  //       try {
+  //         const tasks = await fetchUsersTasks(user.uid);
+  //         setTasks(tasks);
+  //         setLoading(false);
+  //       } catch (error) {
+  //         setError(error.message);
+  //         setLoading(false);
+  //       }
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchTasks();
+  // }, [user]);
 
   useEffect(() => {
     if (tasks.length > 0) {

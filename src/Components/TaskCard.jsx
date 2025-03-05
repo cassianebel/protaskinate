@@ -1,13 +1,12 @@
 import { useDraggable } from "@dnd-kit/core";
 import { NavLink } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
-import { FiMove } from "react-icons/fi";
 import clsx from "clsx";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
 import * as dateFns from "date-fns";
 import { LuCalendarClock } from "react-icons/lu";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaArrowRightArrowLeft } from "react-icons/fa6";
 
 const TaskCard = ({ task }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -76,9 +75,9 @@ const TaskCard = ({ task }) => {
           <div
             {...listeners}
             {...attributes}
-            className="text-2xl opacity-60 hover:opacity-90 cursor-grab"
+            className="hidden lg:block text-2xl opacity-60 hover:opacity-90 cursor-grab"
           >
-            <FiMove />{" "}
+            <FaArrowRightArrowLeft />{" "}
             <span className="sr-only">
               Drag task to update status (to-do, current/in-progress, completed)
             </span>

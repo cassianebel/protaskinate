@@ -7,6 +7,18 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+.modal .cursor-grab {
+  display: none;
+}
+
+button.completed {
+  @apply opacity-50;
+  &:hover,
+  &:focus {
+    @apply opacity-100;
+  }
+}
+
 .low {
   &.yellow {
     @apply bg-yellow-200 dark:bg-yellow-950;

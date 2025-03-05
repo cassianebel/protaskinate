@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Link from "./Link";
-import { fetchUsersTasks, fetchTask } from "../firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
+import { fetchTask } from "../firestore";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -48,22 +50,19 @@ const CalendarView = ({ user, theme }) => {
   };
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (user) {
-        try {
-          const tasks = await fetchUsersTasks(user.uid);
-          setTasks(tasks);
-          setLoading(false);
-        } catch (error) {
-          setError(error.message);
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
+    if (!user) return;
 
-    fetchTasks();
+    const tasksRef = collection(db, "tasks");
+    const q = query(tasksRef, where("userId", "==", user.uid));
+
+    // Set up Firestore listener
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const tasks = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setTasks(tasks);
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
   }, [user]);
 
   useEffect(() => {
@@ -110,7 +109,6 @@ const CalendarView = ({ user, theme }) => {
 
   const handleEmptySlot = (slotInfo) => {
     setIsEmptySlot(true);
-    console.log(slotInfo);
     setSlotInfo(slotInfo);
     setIsModalOpen(true);
   };
