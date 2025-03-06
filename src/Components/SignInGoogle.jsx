@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "./Button";
 import Error from "./Error";
 
-function GoogleSignIn() {
+const GoogleSignIn = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
@@ -48,6 +48,6 @@ function GoogleSignIn() {
       />
     </>
   );
-}
+};
 
 export default GoogleSignIn;

@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const Link = ({ text, link, style }) => {
   let linkStyles;
@@ -16,6 +17,12 @@ const Link = ({ text, link, style }) => {
       {text}
     </NavLink>
   );
+};
+
+Link.propTypes = {
+  text: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+  style: PropTypes.oneOf(["primary", "secondary", "inline"]).isRequired,
 };
 
 export default Link;

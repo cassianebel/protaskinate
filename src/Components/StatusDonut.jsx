@@ -2,6 +2,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import colorCodes from "../colors";
+import PropTypes from "prop-types";
 
 // Register necessary chart elements
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -53,13 +54,20 @@ const StatusDonutChart = ({ tasks, theme }) => {
   };
 
   return (
-    <div className="w-64">
-      <h3 className="text-center text-lg font-semibold mb-2">
-        Tasks by Status
-      </h3>
-      <Doughnut data={data} options={options} />
-    </div>
+    tasks.length > 0 && (
+      <div className="w-64">
+        <h3 className="text-center text-lg font-semibold mb-2">
+          Tasks by Status
+        </h3>
+        <Doughnut data={data} options={options} />
+      </div>
+    )
   );
+};
+
+StatusDonutChart.propTypes = {
+  tasks: PropTypes.object,
+  theme: PropTypes.string.isRequired,
 };
 
 export default StatusDonutChart;

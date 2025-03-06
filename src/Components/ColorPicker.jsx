@@ -3,6 +3,7 @@ import { usePriorityColors } from "../context/PriorityColorContext";
 import { fetchUserFromDatabase, updateUserInDatabase } from "../firestore";
 import Button from "./Button";
 import clsx from "clsx";
+import PropTypes from "prop-types";
 
 function ColorPicker({ user }) {
   const [status, setStatus] = useState("idle");
@@ -103,5 +104,9 @@ function ColorPicker({ user }) {
     </form>
   );
 }
+
+ColorPicker.propTypes = {
+  user: PropTypes.object.isRequired,
+};
 
 export default ColorPicker;

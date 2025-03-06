@@ -8,7 +8,7 @@ import Error from "./Error";
 import Input from "./Input";
 import Link from "./Link";
 
-function SignUp() {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -66,6 +66,6 @@ function SignUp() {
       </p>
     </div>
   );
-}
+};
 
 export default SignUp;

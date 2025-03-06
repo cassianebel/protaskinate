@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const Stat = ({ number, text }) => {
   return (
@@ -7,6 +7,11 @@ const Stat = ({ number, text }) => {
       {text}
     </p>
   );
+};
+
+Stat.propTypes = {
+  number: PropTypes.number.isRequired,
+  text: PropTypes.string.isRequired,
 };
 
 export default Stat;

@@ -4,6 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus, FaChartPie } from "react-icons/fa6";
 import { LuCalendarDays } from "react-icons/lu";
 import { BsKanban } from "react-icons/bs";
+import PropTypes from "prop-types";
 
 const Navigation = ({ openModal, toggleTheme }) => {
   return (
@@ -41,6 +42,11 @@ const Navigation = ({ openModal, toggleTheme }) => {
       </button>
     </nav>
   );
+};
+
+Navigation.propTypes = {
+  openModal: PropTypes.func.isRequired,
+  toggleTheme: PropTypes.func.isRequired,
 };
 
 export default Navigation;

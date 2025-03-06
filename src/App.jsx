@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Route, Routes, Navigate, NavLink } from "react-router-dom";
+import { Route, Routes, NavLink } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase";
+import { PriorityColorProvider } from "./context/PriorityColorContext.jsx";
+import { CategoriesProvider } from "./context/CategoriesContext";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import SignOut from "./components/SignOut";
@@ -9,14 +11,12 @@ import Home from "./Components/Home";
 import Profile from "./Components/Profile";
 import CreateTaskForm from "./Components/CreateTaskForm";
 import EditTaskForm from "./Components/EditTaskForm";
-import { PriorityColorProvider } from "./context/PriorityColorContext.jsx";
-import { CategoriesProvider } from "./context/CategoriesContext";
 import Stats from "./Components/Stats.jsx";
 import Modal from "./Components/Modal";
 import CalendarGrid from "./Components/CalendarGrid.jsx";
 import Navigation from "./Components/Navigation.jsx";
 
-function App() {
+const App = () => {
   const [theme, setTheme] = useState("light");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user] = useAuthState(auth);
@@ -98,6 +98,6 @@ function App() {
       </PriorityColorProvider>
     </CategoriesProvider>
   );
-}
+};
 
 export default App;

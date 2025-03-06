@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const Button = ({ text, type, style, icon, action, disabled }) => {
   let buttonStyle;
 
@@ -22,6 +24,15 @@ const Button = ({ text, type, style, icon, action, disabled }) => {
       <span>{text}</span>
     </button>
   );
+};
+
+Button.propTypes = {
+  text: PropTypes.string,
+  type: PropTypes.string.isRequired,
+  style: PropTypes.string.isRequired,
+  icon: PropTypes.element,
+  action: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default Button;

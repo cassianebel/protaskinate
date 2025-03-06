@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useCategories } from "../context/CategoriesContext";
+import { MdDeleteForever } from "react-icons/md";
 import Input from "./Input";
 import Button from "./Button";
-import { MdDeleteForever } from "react-icons/md";
-import { set } from "date-fns";
 
 const CategoriesManager = () => {
   const { categories, addNewCategory, deleteThisCategory } = useCategories();

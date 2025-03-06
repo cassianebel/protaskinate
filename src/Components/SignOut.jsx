@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 
-function SignOut() {
+const SignOut = () => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -21,6 +21,6 @@ function SignOut() {
       <Button text="Sign Out" style="secondary" action={handleSignOut} />
     </div>
   );
-}
+};
 
 export default SignOut;

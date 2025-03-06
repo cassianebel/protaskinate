@@ -1,5 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
+import PropTypes from "prop-types";
 
 const Column = ({ id, title, tasks, text, user }) => {
   const { setNodeRef } = useDroppable({ id });
@@ -31,6 +32,14 @@ const Column = ({ id, title, tasks, text, user }) => {
       )}
     </div>
   );
+};
+
+Column.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  tasks: PropTypes.object,
+  text: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 export default Column;

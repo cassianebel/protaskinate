@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { NavLink } from "react-router-dom";
-import { FaPencilAlt } from "react-icons/fa";
-import clsx from "clsx";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
-import * as dateFns from "date-fns";
+import { format, parseISO } from "date-fns";
+import { FaPencilAlt } from "react-icons/fa";
 import { LuCalendarClock } from "react-icons/lu";
 import { FaCircleCheck, FaArrowRightArrowLeft } from "react-icons/fa6";
 import Modal from "./Modal";
 import EditTaskForm from "./EditTaskForm";
+import clsx from "clsx";
+import PropTypes from "prop-types";
 
 const TaskCard = ({ task, user, handleTaskUpdate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,9 +21,9 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
   const { categories } = useCategories();
 
   const formattedDueDate = task.dueDate
-    ? dateFns.format(
+    ? format(
         typeof task.dueDate === "string"
-          ? dateFns.parseISO(task.dueDate)
+          ? parseISO(task.dueDate)
           : task.dueDate,
         "MMM d"
       )
@@ -107,6 +107,12 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
       </Modal>
     </div>
   );
+};
+
+TaskCard.propTypes = {
+  task: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  handleTaskUpdate: PropTypes.func.isRequired,
 };
 
 export default TaskCard;

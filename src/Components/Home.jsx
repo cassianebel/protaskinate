@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import Link from "./Link";
-import { fetchUsersTasks } from "../firestore";
 import {
   doc,
   updateDoc,
@@ -10,14 +8,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import {
-  DndContext,
-  DragOverlay,
-  useDraggable,
-  useDroppable,
-} from "@dnd-kit/core";
-import Column from "./Column";
-import TaskCard from "./TaskCard";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
   parseISO,
   isToday,
@@ -34,6 +25,10 @@ import {
   isWithinInterval,
 } from "date-fns";
 import { useCategories } from "../context/CategoriesContext";
+import Column from "./Column";
+import TaskCard from "./TaskCard";
+import Link from "./Link";
+import PropTypes from "prop-types";
 
 const Home = ({ user }) => {
   const [loading, setLoading] = useState(true);
@@ -367,7 +362,7 @@ const Home = ({ user }) => {
           <div className="w-full p-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
             <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
               <Column
-                key="in-progredd"
+                key="in-progress"
                 id="in-progress"
                 title="Current Task"
                 tasks={inProgressTasks}
@@ -401,6 +396,10 @@ const Home = ({ user }) => {
       )}
     </div>
   );
+};
+
+Home.propTypes = {
+  user: PropTypes.object,
 };
 
 export default Home;

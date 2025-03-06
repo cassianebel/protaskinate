@@ -3,6 +3,7 @@ import SignOut from "./SignOut";
 import ColorPicker from "./ColorPicker";
 import CategoriesManager from "./CategoriesManager";
 import SettingsPanel from "./SettingsPanel";
+import PropTypes from "prop-types";
 
 const Profile = ({ user }) => {
   return (
@@ -32,6 +33,10 @@ const Profile = ({ user }) => {
       )}
     </>
   );
+};
+
+Profile.propTypes = {
+  user: PropTypes.object,
 };
 
 export default Profile;

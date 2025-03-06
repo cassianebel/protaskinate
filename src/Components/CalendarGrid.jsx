@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { getDaysInMonth } from "date-fns";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { fetchTask } from "../firestore";
+import { usePriorityColors } from "../context/PriorityColorContext";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { FaCirclePlus, FaCircleCheck } from "react-icons/fa6";
 import Modal from "./Modal";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
-import { FaCirclePlus, FaCircleCheck } from "react-icons/fa6";
 import clsx from "clsx";
-import { usePriorityColors } from "../context/PriorityColorContext";
+import PropTypes from "prop-types";
 
 const CalendarGrid = ({ user }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -214,6 +215,10 @@ const CalendarGrid = ({ user }) => {
       </Modal>
     </div>
   );
+};
+
+CalendarGrid.propTypes = {
+  user: PropTypes.object.isRequired,
 };
 
 export default CalendarGrid;

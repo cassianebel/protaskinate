@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const Input = ({ label, name, type, value, changeHandler, required }) => {
   return (
     <>
@@ -16,6 +18,15 @@ const Input = ({ label, name, type, value, changeHandler, required }) => {
       />
     </>
   );
+};
+
+Input.propTypes = {
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+  required: PropTypes.bool,
 };
 
 export default Input;
