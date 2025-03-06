@@ -101,11 +101,11 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
         />
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Priority Level</legend>
-          <div className="grid grid-cols-3 ">
+          <div className="grid md:grid-cols-3 gap-2">
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md low",
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md low",
                   priorityColors["low"]
                 )}
                 htmlFor="low"
@@ -125,7 +125,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md medium",
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md medium",
                   priorityColors["medium"]
                 )}
                 htmlFor="medium"
@@ -145,7 +145,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
+                  "block p-2 mx-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
                   priorityColors["high"]
                 )}
                 htmlFor="high"
@@ -167,7 +167,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Categories</legend>
           {categories.length > 0 ? (
-            <div className="flex flex-wrap gap-4 ">
+            <div className="flex flex-wrap gap-4 ms-2">
               {categories.map((cat) => (
                 <div key={cat.id}>
                   <label
@@ -184,7 +184,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
                       value={cat.name}
                       className="me-2"
                       checked={taskCategories.includes(cat.name)}
-                      onChange={(e) =>
+                      onChange={() =>
                         setTaskCategories((prev) =>
                           prev.includes(cat.name)
                             ? prev.filter((c) => c !== cat.name)
@@ -206,7 +206,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
         </fieldset>
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Status</legend>
-          <div className="flex gap-4 ms-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div>
               <label className="font-medium" htmlFor="to-do">
                 <input

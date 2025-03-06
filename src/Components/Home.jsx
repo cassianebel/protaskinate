@@ -372,6 +372,7 @@ const Home = ({ user }) => {
                 title="Current Task"
                 tasks={inProgressTasks}
                 text="What are you working on?"
+                user={user}
               />
               <div className="lg:order-first">
                 <Column
@@ -380,6 +381,7 @@ const Home = ({ user }) => {
                   title="To-Dos"
                   tasks={toDoTasks}
                   text="Let's get protaskinating!"
+                  user={user}
                 />
               </div>
               <Column
@@ -388,6 +390,7 @@ const Home = ({ user }) => {
                 title="Completed Tasks"
                 tasks={completedTasks}
                 text="Are you protaskinating?"
+                user={user}
               />
               <DragOverlay>
                 {activeTask ? <TaskCard task={activeTask} /> : null}

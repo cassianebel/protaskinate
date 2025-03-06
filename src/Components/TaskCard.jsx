@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { NavLink } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
@@ -7,8 +8,11 @@ import { useCategories } from "../context/CategoriesContext";
 import * as dateFns from "date-fns";
 import { LuCalendarClock } from "react-icons/lu";
 import { FaCircleCheck, FaArrowRightArrowLeft } from "react-icons/fa6";
+import Modal from "./Modal";
+import EditTaskForm from "./EditTaskForm";
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task, user, handleTaskUpdate }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: task.id,
     data: { ...task },
@@ -24,6 +28,14 @@ const TaskCard = ({ task }) => {
         "MMM d"
       )
     : "No Due Date";
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div
@@ -68,9 +80,9 @@ const TaskCard = ({ task }) => {
         </div>
         <div className="flex flex-col justify-between gap-2">
           <div className="opacity-60 hover:opacity-90">
-            <NavLink to={`/edit/${task.id}`}>
+            <button onClick={() => openModal()}>
               <FaPencilAlt /> <span className="sr-only">Edit Task</span>
-            </NavLink>
+            </button>
           </div>
           <div
             {...listeners}
@@ -84,6 +96,15 @@ const TaskCard = ({ task }) => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <EditTaskForm
+          task={task}
+          user={user}
+          closeModal={closeModal}
+          handleTaskUpdate={handleTaskUpdate}
+        />
+      </Modal>
     </div>
   );
 };

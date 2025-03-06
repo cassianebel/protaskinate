@@ -1,8 +1,13 @@
 import { useDroppable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 
-const Column = ({ id, title, tasks, text }) => {
+const Column = ({ id, title, tasks, text, user }) => {
   const { setNodeRef } = useDroppable({ id });
+
+  // Update Task Data After Editing
+  const handleTaskUpdate = (updatedTask) => {
+    console.log(updatedTask);
+  };
 
   return (
     <div ref={setNodeRef} className="h-full">
@@ -11,11 +16,18 @@ const Column = ({ id, title, tasks, text }) => {
       {title == "Completed Tasks" ? (
         <div className="opacity-50">
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task.id} task={task} user={user} />
           ))}
         </div>
       ) : (
-        tasks.map((task) => <TaskCard key={task.id} task={task} />)
+        tasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            user={user}
+            handleTaskUpdate={handleTaskUpdate}
+          />
+        ))
       )}
     </div>
   );

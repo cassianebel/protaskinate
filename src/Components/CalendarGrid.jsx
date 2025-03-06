@@ -112,6 +112,11 @@ const CalendarGrid = ({ user }) => {
     setIsEmptySlot(false);
   };
 
+  // Update Task Data After Editing
+  const handleTaskUpdate = (updatedTask) => {
+    setTaskDetails(updatedTask);
+  };
+
   const fetchDetails = async (event) => {
     console.log(event);
     if (!user) return;
@@ -138,13 +143,13 @@ const CalendarGrid = ({ user }) => {
   return (
     <div className="w-full px-4 mb-20">
       <div className="flex items-center justify-center gap-8">
-        <button onClick={() => prevMonth()}>
+        <button onClick={() => prevMonth()} className="cursor-pointer">
           <FaChevronLeft />
         </button>
         <h2 className="w-40 text-center text-3xl font-bold mb-2">
           {monthName}
         </h2>
-        <button onClick={() => nextMonth()}>
+        <button onClick={() => nextMonth()} className="cursor-pointer">
           <FaChevronRight />
         </button>
       </div>
@@ -167,7 +172,7 @@ const CalendarGrid = ({ user }) => {
                 <button
                   key={task.title}
                   className={clsx(
-                    "w-11/12 text-start mx-2 ps-2 shadow rounded-sm cursor-pointer",
+                    "w-11/12 text-start mx-2 ps-2 shadow rounded-sm cursor-pointer hover:scale-110 transition-all ease-in ",
                     priorityColors[task.priority],
                     task.priority,
                     task.status
@@ -200,7 +205,11 @@ const CalendarGrid = ({ user }) => {
         {isEmptySlot ? (
           <CreateTaskForm date={slotInfo} user={user} closeModal={closeModal} />
         ) : (
-          <TaskCard task={taskDetails} />
+          <TaskCard
+            task={taskDetails}
+            user={user}
+            handleTaskUpdate={handleTaskUpdate}
+          />
         )}
       </Modal>
     </div>

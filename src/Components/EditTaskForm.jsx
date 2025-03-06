@@ -1,15 +1,13 @@
 import { useState, useEffect, use } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { fetchTask, updateTask, deleteTask } from "../firestore";
 import Input from "./Input";
 import Button from "./Button";
-import { IoCloseCircleOutline } from "react-icons/io5";
 import clsx from "clsx";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
 
-const EditTaskForm = ({ user }) => {
-  const { taskId } = useParams();
+const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
   const [taskOwner, setTaskOwner] = useState("");
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -23,7 +21,7 @@ const EditTaskForm = ({ user }) => {
 
   useEffect(() => {
     if (user) {
-      fetchTask(taskId)
+      fetchTask(task.id)
         .then((task) => {
           if (task) {
             setTaskOwner(task.data().userId);
@@ -64,17 +62,21 @@ const EditTaskForm = ({ user }) => {
       lastModifiedTimestamp: new Date(),
     };
 
-    const task = await fetchTask(taskId);
-    if (task.data().status != "completed" && taskStatus == "completed") {
+    const fetchedTask = await fetchTask(task.id);
+    if (fetchedTask.data().status != "completed" && taskStatus == "completed") {
       updatedTask.completedTimestamp = new Date();
     }
-    if (task.data().status != "in-progress" && taskStatus == "in-progress") {
+    if (
+      fetchedTask.data().status != "in-progress" &&
+      taskStatus == "in-progress"
+    ) {
       updatedTask.startedTimestamp = new Date();
     }
 
-    await updateTask(taskId, updatedTask);
+    await updateTask(task.id, updatedTask);
     console.log("Task updated successfully!");
-    navigate("/");
+    handleTaskUpdate(updatedTask);
+    closeModal();
   };
 
   const handleDelete = async () => {
@@ -86,13 +88,13 @@ const EditTaskForm = ({ user }) => {
       return;
     }
 
-    await deleteTask(taskId);
+    await deleteTask(task.id);
     console.log("Task deleted successfully!");
-    navigate("/");
+    closeModal();
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full lg:max-w-md mx-auto">
       <form
         onSubmit={handleSubmit}
         className="relative p-4 mx-3 bg-white dark:bg-zinc-900 rounded-lg shadow-md"
@@ -127,11 +129,11 @@ const EditTaskForm = ({ user }) => {
         />
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Priority Level</legend>
-          <div className="grid grid-cols-3 ">
+          <div className="grid md:grid-cols-3 gap-2">
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md low",
+                  "block p-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md low",
                   priorityColors["low"]
                 )}
                 htmlFor="low"
@@ -151,7 +153,7 @@ const EditTaskForm = ({ user }) => {
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md medium",
+                  "block p-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md medium",
                   priorityColors["medium"]
                 )}
                 htmlFor="medium"
@@ -171,7 +173,7 @@ const EditTaskForm = ({ user }) => {
             <div>
               <label
                 className={clsx(
-                  "block p-2 mx-2 scale-90 has-[:checked]:scale-110 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
+                  "block p-2 scale-90 has-[:checked]:scale-100 transition-all duration-300 ease-in-out font-medium rounded-md high text-white",
                   priorityColors["high"]
                 )}
                 htmlFor="high"
@@ -193,7 +195,7 @@ const EditTaskForm = ({ user }) => {
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Categories</legend>
           {categories.length > 0 ? (
-            <div className="flex flex-wrap gap-4 ">
+            <div className="flex flex-wrap gap-4 ms-2">
               {categories.map((cat) => (
                 <div key={cat.id}>
                   <label
@@ -232,7 +234,7 @@ const EditTaskForm = ({ user }) => {
         </fieldset>
         <fieldset className="mb-6">
           <legend className="block mx-2 mb-1 font-light">Status</legend>
-          <div className="flex gap-4 ms-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div>
               <label className="font-medium" htmlFor="to-do">
                 <input
@@ -278,19 +280,8 @@ const EditTaskForm = ({ user }) => {
           </div>
         </fieldset>
         <Button type="submit" style="primary" text="Update Task" />
-        <div className="text-2xl absolute top-0 right-0">
-          <Button
-            action={() => navigate("/")}
-            style="inline"
-            icon={<IoCloseCircleOutline />}
-          />
-        </div>
         <div className="flex gap-4 mt-4">
-          <Button
-            text="Cancel"
-            action={() => navigate("/")}
-            style="secondary"
-          />
+          <Button text="Cancel" action={() => closeModal()} style="secondary" />
           <Button text="Delete" action={handleDelete} style="danger" />
         </div>
       </form>

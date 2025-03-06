@@ -7,18 +7,14 @@ import SignUp from "./components/SignUp";
 import SignOut from "./components/SignOut";
 import Home from "./Components/Home";
 import Profile from "./Components/Profile";
-import { IoInvertMode } from "react-icons/io5";
-import { FaUserCircle } from "react-icons/fa";
-import { FaCirclePlus, FaChartPie } from "react-icons/fa6";
 import CreateTaskForm from "./Components/CreateTaskForm";
 import EditTaskForm from "./Components/EditTaskForm";
 import { PriorityColorProvider } from "./context/PriorityColorContext.jsx";
 import { CategoriesProvider } from "./context/CategoriesContext";
 import Stats from "./Components/Stats.jsx";
-import { LuCalendarDays } from "react-icons/lu";
-import { BsKanban } from "react-icons/bs";
 import Modal from "./Components/Modal";
 import CalendarGrid from "./Components/CalendarGrid.jsx";
+import Navigation from "./Components/Navigation.jsx";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -55,47 +51,19 @@ function App() {
       <PriorityColorProvider user={user}>
         <div className={theme}>
           <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between md:justify-start gap-10">
-            <header className="sticky top-0  w-full bg-zinc-100 dark:bg-zinc-900 py-1 px-3 z-50">
-              <div className="max-w-[1700px] flex items-center justify-between mx-auto">
+            <header className="sticky top-0 w-full bg-zinc-100 dark:bg-zinc-900 py-2 px-3 z-50">
+              <div className="max-w-[1700px] flex items-center justify-center md:justify-between mx-auto">
                 <h1>
                   <NavLink
                     to="/"
                     className="text-xl md:text-2xl lg:text-3xl font-bold"
                   >
-                    protaskinate
+                    Protaskinate
                   </NavLink>
                 </h1>
-
-                <nav className="flex items-center gap-6 text-2xl">
-                  <button
-                    onClick={() => openModal()}
-                    className="hidden md:block text-2xl p-2"
-                  >
-                    <FaCirclePlus />
-                    <span className="sr-only">Create New Task</span>
-                  </button>
-
-                  <NavLink to="/" className="p-2">
-                    <BsKanban />
-                    <span className="sr-only">KanBan Board</span>
-                  </NavLink>
-                  <NavLink to="/calendar" className="p-2 hidden lg:block">
-                    <LuCalendarDays />
-                    <span className="sr-only">Calendar</span>
-                  </NavLink>
-                  <NavLink to="/stats" className="p-2">
-                    <FaChartPie />
-                    <span className="sr-only">Analytics</span>
-                  </NavLink>
-                  <NavLink to="/profile" className="p-2">
-                    <FaUserCircle />
-                    <span className="sr-only">Profile</span>
-                  </NavLink>
-                  <button onClick={toggleTheme} className="p-2">
-                    <IoInvertMode />
-                    <span className="sr-only">Toggle Theme</span>
-                  </button>
-                </nav>
+                <div className="hidden md:block">
+                  <Navigation openModal={openModal} toggleTheme={toggleTheme} />
+                </div>
               </div>
             </header>
 
@@ -122,10 +90,8 @@ function App() {
             <Modal isOpen={isModalOpen} onClose={closeModal}>
               <CreateTaskForm user={user} closeModal={closeModal} />
             </Modal>
-            <footer className="md:hidden sticky bottom-0 w-full  p-6 flex items-center justify-center text-4xl">
-              <NavLink to="/create">
-                <FaCirclePlus />
-              </NavLink>
+            <footer className="md:hidden sticky bottom-0 w-full p-4 bg-zinc-100 dark:bg-zinc-900 z-40 flex items-center justify-center text-4xl">
+              <Navigation openModal={openModal} toggleTheme={toggleTheme} />
             </footer>
           </div>
         </div>
