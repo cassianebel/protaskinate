@@ -30,7 +30,7 @@ const CategoriesManager = () => {
     addNewCategory(name, color);
     setTimeout(() => {
       setNewCategoryName("");
-      setNewCategoryColor("");
+      setNewCategoryColor("yellow");
       setSaving(false);
     }, 2000);
   };

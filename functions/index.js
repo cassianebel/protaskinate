@@ -9,9 +9,9 @@ export const addDefaultCategories = functions.auth
   .user()
   .onCreate(async (user) => {
     const defaultCategories = [
-      { name: "Personal", color: "red" },
-      { name: "Work", color: "blue" },
-      { name: "Errand", color: "orange" },
+      { name: "errand", color: "lime" },
+      { name: "personal", color: "green" },
+      { name: "work", color: "teal" },
     ];
 
     const userRef = db.collection("users").doc(user.uid);

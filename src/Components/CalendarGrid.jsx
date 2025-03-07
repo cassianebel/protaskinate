@@ -144,13 +144,19 @@ const CalendarGrid = ({ user }) => {
   return (
     <div className="w-full px-4 mb-20">
       <div className="flex items-center justify-center gap-8">
-        <button onClick={() => prevMonth()} className="cursor-pointer">
+        <button
+          onClick={() => prevMonth()}
+          className="hover:scale-120 duration-200 p-3 cursor-pointer"
+        >
           <FaChevronLeft />
         </button>
         <h2 className="w-40 text-center text-3xl font-bold mb-2">
           {monthName}
         </h2>
-        <button onClick={() => nextMonth()} className="cursor-pointer">
+        <button
+          onClick={() => nextMonth()}
+          className="hover:scale-120 duration-200 p-3 cursor-pointer"
+        >
           <FaChevronRight />
         </button>
       </div>
@@ -194,7 +200,7 @@ const CalendarGrid = ({ user }) => {
               onClick={() => handleEmptySlot(day.date)}
               className="grow w-full cursor-pointer pt-1 pb-2 group/item"
             >
-              <span className="group/edit invisible group-hover/item:visible flex items-center justify-center gap-2">
+              <span className="group/edit opacity-0 group-hover/item:opacity-100 duration-300 ease-in-out flex items-center justify-center gap-2">
                 <FaCirclePlus />
                 <span className="pb-1">add new task</span>
               </span>

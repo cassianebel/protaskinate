@@ -4,6 +4,7 @@ import { isToday, isSameWeek, isSameMonth, isSameYear, format } from "date-fns";
 import PriorityDonut from "./PriorityDonut";
 import StatusDonut from "./StatusDonut";
 import Stat from "./Stat";
+import Link from "./Link";
 import PropTypes from "prop-types";
 
 const Stats = ({ user, theme }) => {
@@ -88,69 +89,55 @@ const Stats = ({ user, theme }) => {
         tasksCompletedThisYear,
         setTasksCompletedThisYear
       );
-
-      // let times = [];
-      // const completionTimes = completed.map((task) => {
-      //   const completedTime = task.completedTimestamp.toDate();
-      //   const createdTime = task.createdTimestamp.toDate();
-      //   const time = dateFns.differenceInMinutes(completedTime, createdTime);
-      //   times.push(time);
-      // });
-      // const averageTime = times.reduce((a, b) => a + b, 0) / times.length;
-      // if (averageTime > 60) {
-      //   const hours = Math.floor(averageTime / 60);
-      //   const minutes = Math.round(averageTime % 60);
-      //   setAverageCompletionTime(`${hours}h ${minutes}m`);
-      // }
-      // if (averageTime < 60) {
-      //   setAverageCompletionTime(`${Math.round(averageTime)}m`);
-      // }
     }
   }, [tasks]);
 
   const animateNums = (num, setVal, setter) => {
-    setTimeout(() => {
-      setter(setVal++);
-      if (num === setVal) return;
-      return animateNums(num, setVal, setter);
-    }, 30);
+    if (num > 0) {
+      setTimeout(() => {
+        setter(setVal++);
+        if (num === setVal) return;
+        return animateNums(num, setVal, setter);
+      }, 30);
+    }
   };
 
-  return (
-    user && (
-      <div>
-        <h2 className="text-2xl text-center font-bold mb-20">Analytics</h2>
-        <h3 className="text-lg text-center font-bold mb-4">Completed Tasks</h3>
-        <div className="flex flex-row flex-wrap gap-10 items-center justify-center mx-10 mb-20">
-          <Stat text="today" number={tasksCompletedToday} />
-          <Stat text="this week" number={tasksCompletedThisWeek} />
-          <Stat text={format(today, "MMMM")} number={tasksCompletedThisMonth} />
-          <Stat text={format(today, "y")} number={tasksCompletedThisYear} />
-          <Stat text="total" number={totalCompletedTasks} />
-        </div>
-        {/* <p className="text-center m-10">
-        <span className="block text-6xl font-black">
-          {averageCompletionTime}
-        </span>{" "}
-        average time spent per task
-      </p> */}
-        <div className="flex flex-col lg:flex-row gap-10 items-center justify-center m-10">
-          <StatusDonut tasks={tasks} theme={theme} />
-          <div className="flex flex-col md:flex-row gap-10">
-            <PriorityDonut
-              tasks={tasks}
-              theme={theme}
-              heading="ALL Tasks by Priority"
-            />
-            <PriorityDonut
-              tasks={completedTasks}
-              theme={theme}
-              heading="COMPLETED Tasks by Priority"
-            />
-          </div>
+  return !user ? (
+    <div className="flex flex-col items-center justify-center">
+      <Link text="New here? Sign up!" link="/signup" style="primary" />
+      <Link
+        text="Already protaskanating? Sign in!"
+        link="/signin"
+        style="secondary"
+      />
+    </div>
+  ) : (
+    <div>
+      <h2 className="text-2xl text-center font-bold mb-20">Stats</h2>
+      <h3 className="text-lg text-center font-bold mb-4">Completed Tasks</h3>
+      <div className="flex flex-row flex-wrap gap-10 items-center justify-center mx-10 mb-20">
+        <Stat text="today" number={tasksCompletedToday} />
+        <Stat text="this week" number={tasksCompletedThisWeek} />
+        <Stat text={format(today, "MMMM")} number={tasksCompletedThisMonth} />
+        <Stat text={format(today, "y")} number={tasksCompletedThisYear} />
+        <Stat text="total" number={totalCompletedTasks} />
+      </div>
+      <div className="flex flex-col lg:flex-row gap-10 items-center justify-center m-10">
+        <StatusDonut tasks={tasks} theme={theme} />
+        <div className="flex flex-col md:flex-row gap-10">
+          <PriorityDonut
+            tasks={tasks}
+            theme={theme}
+            heading="ALL Tasks by Priority"
+          />
+          <PriorityDonut
+            tasks={completedTasks}
+            theme={theme}
+            heading="COMPLETED Tasks by Priority"
+          />
         </div>
       </div>
-    )
+    </div>
   );
 };
 

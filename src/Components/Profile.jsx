@@ -19,8 +19,8 @@ const Profile = ({ user }) => {
             <SignOut />
           </div>
 
-          <div className="flex flex-col gap-12 lg:flex-row xl:gap-24">
-            <SettingsPanel heading="Customize Task Colors">
+          <div className="min-w-96 flex flex-col gap-12 lg:flex-row xl:gap-24">
+            <SettingsPanel heading="Customize Priority Colors">
               <ColorPicker user={user} />
             </SettingsPanel>
             <SettingsPanel heading="Manage Categories">

@@ -172,9 +172,12 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
                 </div>
               </div>
             </fieldset>
-            <fieldset className="mb-6">
-              <legend className="block mx-2 mb-1 font-light">Categories</legend>
-              {categories.length > 0 ? (
+
+            {categories.length > 0 && (
+              <fieldset className="mb-6">
+                <legend className="block mx-2 mb-1 font-light">
+                  Categories
+                </legend>
                 <div className="flex flex-wrap gap-4 ms-2">
                   {categories.map((cat) => (
                     <div key={cat.id}>
@@ -205,13 +208,8 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="ms-4">
-                  No categories available.
-                  <NavLink to="/profile">Manage your categories here</NavLink>
-                </p>
-              )}
-            </fieldset>
+              </fieldset>
+            )}
             <fieldset className="mb-6">
               <legend className="block mx-2 mb-1 font-light">Status</legend>
               <div className="flex flex-col md:flex-row gap-4">

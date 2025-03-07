@@ -16,7 +16,7 @@ const Button = ({ text, type, style, icon, action, disabled }) => {
   return (
     <button
       type={type ? type : "button"}
-      className={`w-full my-3 p-2 px-4 rounded-md flex items-center justify-center gap-2 cursor-pointer ${buttonStyle}`}
+      className={`w-full my-3 p-2 px-4 rounded-md flex items-center justify-center gap-2 cursor-pointer duration-300 ${buttonStyle}`}
       onClick={action ? action : null}
       disabled={disabled ? disabled : false}
     >

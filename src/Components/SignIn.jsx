@@ -64,7 +64,7 @@ const SignIn = () => {
       <p className="my-2 text-center text-lg kaushan-script-regular">- OR -</p>
       <GoogleSignIn />
       <p className="mt-5">
-        No Account? <Link text="Sign Up" link="/signup" style="inline" />
+        New Here? <Link text="Sign Up" link="/signup" style="inline" />
       </p>
     </div>
   );

@@ -13,7 +13,10 @@ const Link = ({ text, link, style }) => {
     linkStyles = "underline font-semibold px-1";
   }
   return (
-    <NavLink to={link} className={`my-3 p-2 px-4 rounded-md ${linkStyles}`}>
+    <NavLink
+      to={link}
+      className={`my-3 p-2 px-4 rounded-md duration-300 ${linkStyles}`}
+    >
       {text}
     </NavLink>
   );

@@ -11,33 +11,36 @@ const Navigation = ({ openModal, toggleTheme }) => {
     <nav className="flex items-center gap-8 lg:gap-4 xl:gap-8 text-2xl font-bold">
       <button
         onClick={() => openModal()}
-        className="flex items-center gap-2 text-2xl p-2 cursor-pointer"
+        className="flex items-center gap-2 text-2xl p-2 cursor-pointer group"
       >
-        <FaCirclePlus />
+        <FaCirclePlus className="md:scale-90 group-hover:scale-110 duration-200" />
         <span className="hidden lg:block text-base">New Task</span>
       </button>
 
-      <NavLink to="/" className="flex items-center gap-2 p-2">
-        <BsKanban />
+      <NavLink to="/" className="flex items-center gap-2 p-2 group">
+        <BsKanban className="md:scale-90 group-hover:scale-110 duration-200" />
         <span className="hidden lg:block text-base">KanBan</span>
       </NavLink>
-      <NavLink to="/calendar" className="p-2 hidden lg:flex items-center gap-2">
-        <LuCalendarDays />
+      <NavLink
+        to="/calendar"
+        className="p-2 hidden lg:flex items-center gap-2 group"
+      >
+        <LuCalendarDays className="md:scale-90 group-hover:scale-110 duration-200" />
         <span className="hidden lg:block text-base">Calendar</span>
       </NavLink>
-      <NavLink to="/stats" className="p-2 flex items-center gap-2">
-        <FaChartPie />
-        <span className="hidden lg:block text-base">Analytics</span>
+      <NavLink to="/stats" className="p-2 flex items-center gap-2 group">
+        <FaChartPie className="md:scale-90 group-hover:scale-110 duration-200" />
+        <span className="hidden lg:block text-base">Stats</span>
       </NavLink>
-      <NavLink to="/profile" className="p-2 flex items-center gap-2">
-        <FaUserCircle />
+      <NavLink to="/profile" className="p-2 flex items-center gap-2 group">
+        <FaUserCircle className="md:scale-90 group-hover:scale-110 duration-200" />
         <span className="hidden lg:block text-base">Profile</span>
       </NavLink>
       <button
         onClick={toggleTheme}
-        className="p-2 flex items-center gap-2 cursor-pointer"
+        className="p-2 flex items-center gap-2 cursor-pointer group"
       >
-        <IoInvertMode />
+        <IoInvertMode className="md:scale-90 group-hover:scale-110 duration-200" />
         <span className="hidden lg:block text-base">Toggle Theme</span>
       </button>
     </nav>

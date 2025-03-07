@@ -79,15 +79,18 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
           )}
         </div>
         <div className="flex flex-col justify-between gap-2">
-          <div className="opacity-60 hover:opacity-90">
-            <button onClick={() => openModal()}>
+          <div>
+            <button
+              onClick={() => openModal()}
+              className="cursor-pointer opacity-60 hover:opacity-90 duration-200"
+            >
               <FaPencilAlt /> <span className="sr-only">Edit Task</span>
             </button>
           </div>
           <div
             {...listeners}
             {...attributes}
-            className="hidden lg:block text-2xl opacity-60 hover:opacity-90 cursor-grab"
+            className="hidden lg:block text-2xl opacity-60 hover:opacity-90 duration-200 cursor-grab"
           >
             <FaArrowRightArrowLeft />{" "}
             <span className="sr-only">

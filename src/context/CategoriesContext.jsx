@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { fetchCategories, addCategory, deleteCategory } from "../firestore";
+import { addCategory, deleteCategory } from "../firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 
 const CategoriesContext = createContext();
 
@@ -11,17 +13,19 @@ export const CategoriesProvider = ({ user, children }) => {
   ]);
 
   useEffect(() => {
-    if (user) {
-      fetchCategories(user.uid)
-        .then((userData) => {
-          if (userData) {
-            setCategories(userData);
-          }
-        })
-        .catch((error) => {
-          console.error("An error occurred:", error);
-        });
-    }
+    if (!user) return;
+
+    const categoriesRef = collection(db, "users", user.uid, "categories");
+
+    const unsubscribe = onSnapshot(categoriesRef, (snapshot) => {
+      const updatedCategories = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCategories(updatedCategories);
+    });
+
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, [user]);
 
   const addNewCategory = (name, color) => {
