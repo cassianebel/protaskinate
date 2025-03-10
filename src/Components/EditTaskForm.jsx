@@ -14,6 +14,9 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [taskDueDate, setTaskDueDate] = useState("");
+  const [repeatNumber, setRepeatNumber] = useState("");
+  const [repeatUnit, setRepeatUnit] = useState("never");
+  const [repeatError, setRepeatError] = useState(null);
   const [taskPriority, setTaskPriority] = useState("low");
   const [taskCategories, setTaskCategories] = useState([]);
   const [taskStatus, setTaskStatus] = useState("to-do");
@@ -29,6 +32,8 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
             setTaskTitle(task.data().title);
             setTaskDescription(task.data().description || "");
             setTaskDueDate(task.data().dueDate || "");
+            setRepeatNumber(task.data().repeatNumber || "");
+            setRepeatUnit(task.data().repeatUnit || "never");
             setTaskPriority(task.data().priority);
             setTaskCategories(task.data().categories || []);
             setTaskStatus(task.data().status);
@@ -53,10 +58,29 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
       return;
     }
 
+    if (repeatNumber > 0 && repeatUnit == "never") {
+      setRepeatError("please choose a REPEAT UNIT");
+      return;
+    } else if (repeatUnit != "never" && repeatNumber < 1) {
+      setRepeatError("please choose a REPEAT FREQUENCY");
+      return;
+    } else if (
+      repeatNumber > 0 &&
+      repeatUnit != "never" &&
+      taskDueDate == null
+    ) {
+      setRepeatError("please choose a DUE DATE for repeating tasks");
+      return;
+    } else {
+      setRepeatError(null);
+    }
+
     const updatedTask = {
       title: taskTitle,
       description: taskDescription,
       dueDate: taskDueDate ? taskDueDate : null,
+      repeatNumber: +repeatNumber,
+      repeatUnit: repeatUnit,
       priority: taskPriority,
       categories: taskCategories,
       status: taskStatus,
@@ -132,6 +156,53 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
               value={taskDueDate}
               changeHandler={(e) => setTaskDueDate(e.target.value)}
             />
+            {repeatError && (
+              <p className="text-red-700 dark:text-red-400 font-medium text-center mx-2 my-4">
+                {repeatError}
+              </p>
+            )}
+            <fieldset>
+              <legend className="text-lg ">Repeat</legend>
+              <div className="flex items-center gap-2">
+                <div className="">
+                  <label
+                    htmlFor="repeatNumber"
+                    className="block mx-2 mb-1 font-light"
+                  >
+                    Frequency
+                  </label>
+                  <input
+                    type="number"
+                    id="repeatNumber"
+                    name="repeatNumber"
+                    value={repeatNumber}
+                    min="0"
+                    onChange={(e) => setRepeatNumber(e.target.value)}
+                    className="w-30 block p-2 mb-6 border border-zinc-300 bg-zinc-100 rounded-md dark:border-zinc-700 dark:bg-zinc-800"
+                  />
+                </div>
+                <div className="w-full">
+                  <label
+                    htmlFor="repeatUnit"
+                    className="block mx-2 mb-1 font-light"
+                  >
+                    Every (Unit)
+                  </label>
+                  <select
+                    id="repeatUnit"
+                    name="repeatUnit"
+                    value={repeatUnit}
+                    onChange={(e) => setRepeatUnit(e.target.value)}
+                    className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 mb-6 rounded-md font-medium"
+                  >
+                    <option value="never">Never</option>
+                    <option value="day">Day(s)</option>
+                    <option value="week">Week(s)</option>
+                    <option value="month">Month(s)</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
             <fieldset className="mb-6">
               <legend className="block mx-2 mb-1 font-light">
                 Priority Level

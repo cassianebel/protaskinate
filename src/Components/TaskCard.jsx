@@ -5,7 +5,11 @@ import { useCategories } from "../context/CategoriesContext";
 import { format, parseISO } from "date-fns";
 import { FaPencilAlt } from "react-icons/fa";
 import { LuCalendarClock } from "react-icons/lu";
-import { FaCircleCheck, FaArrowRightArrowLeft } from "react-icons/fa6";
+import {
+  FaCircleCheck,
+  FaArrowRightArrowLeft,
+  FaRepeat,
+} from "react-icons/fa6";
 import Modal from "./Modal";
 import EditTaskForm from "./EditTaskForm";
 import clsx from "clsx";
@@ -28,6 +32,11 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
         "MMM d"
       )
     : "No Due Date";
+
+  const formattedRepeat =
+    task.repeatNumber > 1
+      ? `${task.repeatNumber} ${task.repeatUnit}s`
+      : task.repeatUnit;
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -58,8 +67,13 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
             {task.description}
           </p>
           {task.dueDate && (
-            <p className="flex gap-2 items-center font-light mt-2 shrink-0">
+            <p className="flex gap-3 items-center font-light mt-2 shrink-0">
               <LuCalendarClock className="text-xl" /> {formattedDueDate}
+              {task.repeatNumber > 0 && (
+                <>
+                  <FaRepeat /> <span>Every {formattedRepeat}</span>
+                </>
+              )}
             </p>
           )}
           {task.categories && (

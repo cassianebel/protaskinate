@@ -50,7 +50,7 @@ const App = () => {
     <CategoriesProvider user={user}>
       <PriorityColorProvider user={user}>
         <div className={theme}>
-          <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between md:justify-start gap-10">
+          <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between md:justify-start gap-10 duration-300 ease-in-out">
             <header className="sticky top-0 w-full bg-zinc-100 dark:bg-zinc-900 py-2 px-3 z-50">
               <div className="max-w-[1700px] flex items-center justify-center md:justify-between mx-auto">
                 <h1>

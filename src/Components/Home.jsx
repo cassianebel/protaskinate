@@ -7,6 +7,7 @@ import {
   where,
   onSnapshot,
 } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
@@ -58,25 +59,6 @@ const Home = ({ user }) => {
     // Cleanup listener on unmount
     return () => unsubscribe();
   }, [user]);
-
-  // useEffect(() => {
-  //   const fetchTasks = async () => {
-  //     if (user) {
-  //       try {
-  //         const tasks = await fetchUsersTasks(user.uid);
-  //         setTasks(tasks);
-  //         setLoading(false);
-  //       } catch (error) {
-  //         setError(error.message);
-  //         setLoading(false);
-  //       }
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchTasks();
-  // }, [user]);
 
   useEffect(() => {
     if (tasks.length > 0) {
@@ -275,11 +257,11 @@ const Home = ({ user }) => {
       await updateDoc(taskRef, updatedFields);
 
       // Update local state
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === taskId ? { ...task, ...updatedFields } : task
-        )
-      );
+      // setTasks((prevTasks) =>
+      //   prevTasks.map((task) =>
+      //     task.id === taskId ? { ...task, ...updatedFields } : task
+      //   )
+      // );
 
       if (newStatus === "completed") {
         setCompletedTasks((prevCompletedTasks) => {
@@ -318,7 +300,7 @@ const Home = ({ user }) => {
                   </label>
                   <select
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"
+                    className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
                   >
                     <option value="all">All</option>
                     {categories.map((category) => (
@@ -333,7 +315,7 @@ const Home = ({ user }) => {
                 <label className="text-end leading-5">Filter by Priority</label>
                 <select
                   onChange={(e) => setPriorityFilter(e.target.value)}
-                  className="bg-zinc-50 dark:bg-zinc-800  border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"
+                  className="bg-zinc-50 dark:bg-zinc-800  border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
                 >
                   <option value="all">All</option>
                   <option value="high">High</option>
@@ -345,7 +327,7 @@ const Home = ({ user }) => {
                 <label className="text-end leading-5">Filter by Due Date</label>
                 <select
                   onChange={(e) => setDateFilter(e.target.value)}
-                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-sm font-medium"
+                  className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
                 >
                   <option value="all">All</option>
                   <option value="isToday">Today</option>

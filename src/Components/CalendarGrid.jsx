@@ -4,8 +4,13 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { fetchTask } from "../firestore";
 import { usePriorityColors } from "../context/PriorityColorContext";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { FaCirclePlus, FaCircleCheck } from "react-icons/fa6";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaCirclePlus,
+  FaCircleCheck,
+  FaRepeat,
+} from "react-icons/fa6";
 import Modal from "./Modal";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
@@ -49,6 +54,7 @@ const CalendarGrid = ({ user }) => {
         id: task.id,
         title: task.title,
         date: adjustedDate,
+        repeatNumber: task.repeatNumber,
         priority: task.priority,
         status: task.status,
       };
@@ -186,13 +192,14 @@ const CalendarGrid = ({ user }) => {
                   )}
                   onClick={() => fetchDetails(task)}
                 >
-                  <div className="border-1 rounded-sm bg-white dark:bg-zinc-950 dark:text-zinc-400 ps-2 py-1 pe-1">
+                  <div className="flex gap-2 items-center justify-between border-1 rounded-sm bg-white dark:bg-zinc-950 dark:text-zinc-400 px-2 py-1">
                     <p className="truncate">
                       {task.status == "completed" && (
                         <FaCircleCheck className="inline me-2 -mt-1" />
                       )}
                       {task.title}
                     </p>
+                    {task.repeatNumber > 0 && <FaRepeat />}
                   </div>
                 </button>
               ))}
