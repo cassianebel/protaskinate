@@ -57,6 +57,7 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
       userId: user.uid,
       createdTimestamp: new Date(),
       lastModifiedTimestamp: new Date(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
     if (taskStatus === "completed") {

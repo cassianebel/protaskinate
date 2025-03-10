@@ -14,22 +14,14 @@ const Column = ({ id, title, tasks, text, user }) => {
     <div ref={setNodeRef} className="h-full">
       <h2 className="text-2xl text-center m-4">{title}</h2>
       {tasks.length === 0 && <p className="text-center">{text}</p>}
-      {title == "Completed Tasks" ? (
-        <div className="opacity-50">
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} user={user} />
-          ))}
-        </div>
-      ) : (
-        tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            user={user}
-            handleTaskUpdate={handleTaskUpdate}
-          />
-        ))
-      )}
+      {tasks.map((task) => (
+        <TaskCard
+          key={task.id}
+          task={task}
+          user={user}
+          handleTaskUpdate={handleTaskUpdate}
+        />
+      ))}
     </div>
   );
 };

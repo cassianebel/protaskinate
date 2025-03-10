@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
 import { fetchTask, updateTask, deleteTask } from "../firestore";
 import { usePriorityColors } from "../context/PriorityColorContext";
 import { useCategories } from "../context/CategoriesContext";
@@ -90,6 +89,7 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
     const fetchedTask = await fetchTask(task.id);
     if (fetchedTask.data().status != "completed" && taskStatus == "completed") {
       updatedTask.completedTimestamp = new Date();
+      updatedTask.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
     if (
       fetchedTask.data().status != "in-progress" &&

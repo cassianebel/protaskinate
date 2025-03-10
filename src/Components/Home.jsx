@@ -249,6 +249,8 @@ const Home = ({ user }) => {
 
       if (newStatus === "completed") {
         updatedFields.completedTimestamp = now;
+        updatedFields.timeZone =
+          Intl.DateTimeFormat().resolvedOptions().timeZone;
       } else if (newStatus === "in-progress") {
         updatedFields.startedTimestamp = now;
       }

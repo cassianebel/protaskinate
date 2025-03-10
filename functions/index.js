@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import * as functions from "firebase-functions/v1";
+import { DateTime } from "luxon";
+import { Timestamp } from "firebase-admin/firestore";
 
 initializeApp();
 const db = getFirestore();
@@ -47,7 +49,12 @@ export const handleRepeatingTasks = functions.firestore
       after.status == "completed" &&
       after.repeatNumber
     ) {
-      const newDueDate = getNextDueDate(after.repeatNumber, after.repeatUnit);
+      const newDueDate = getNextDueDate(
+        after.completedTimestamp.toDate(),
+        after.repeatNumber,
+        after.repeatUnit,
+        after.timeZone
+      );
 
       // Create a new task with the updated due date
       await db.collection("tasks").add({
@@ -63,22 +70,73 @@ export const handleRepeatingTasks = functions.firestore
     }
   });
 
-function getNextDueDate(number, unit) {
-  let date = new Date();
+export const handleNewTasks = functions.firestore
+  .document("tasks/{taskId}")
+  .onCreate(async (snap) => {
+    try {
+      const taskData = snap.data();
 
+      // Only proceed if the task is completed and set to repeat
+      if (taskData.status === "completed" && taskData.repeatNumber) {
+        // Ensure completedTimestamp is a valid Firestore Timestamp before conversion
+        const completedTimestamp =
+          taskData.completedTimestamp instanceof Timestamp
+            ? taskData.completedTimestamp.toDate()
+            : new Date(taskData.completedTimestamp);
+
+        const newDueDate = getNextDueDate(
+          completedTimestamp,
+          taskData.repeatNumber,
+          taskData.repeatUnit,
+          taskData.timeZone
+        );
+
+        // Create a new task with updated values
+        await db.collection("tasks").add({
+          ...taskData,
+          dueDate: newDueDate,
+          status: "to-do",
+          completedTimestamp: null,
+          startedTimestamp: null,
+        });
+
+        console.log("New repeating task created for:", newDueDate);
+      }
+    } catch (error) {
+      console.error("Error handling new repeating task:", error);
+    }
+  });
+
+function getNextDueDate(completedTimestamp, number, unit, userTimeZone) {
+  // Convert Firestore Timestamp to JavaScript Date
+  const utcDate =
+    completedTimestamp instanceof Timestamp
+      ? completedTimestamp.toDate()
+      : new Date(completedTimestamp);
+
+  console.log("Completed Timestamp (UTC):", utcDate.toISOString());
+
+  // Convert UTC date to local time in the user's timezone
+  const localDate = DateTime.fromJSDate(utcDate, { zone: userTimeZone });
+
+  console.log("Adjusted Local Date:", localDate.toISO());
+
+  let newDueDate;
   switch (unit) {
     case "day":
-      date.setDate(date.getDate() + number);
+      newDueDate = localDate.plus({ days: number });
       break;
     case "week":
-      date.setDate(date.getDate() + 7 * number);
+      newDueDate = localDate.plus({ weeks: number });
       break;
     case "month":
-      date.setMonth(date.getMonth() + number);
+      newDueDate = localDate.plus({ months: number });
       break;
     default:
-      return date;
+      return localDate.toISODate();
   }
 
-  return date.toISOString().split("T")[0];
+  console.log("Final Due Date Before Formatting:", newDueDate.toISO());
+
+  return newDueDate.toISODate(); // Returns in YYYY-MM-DD format
 }

@@ -39,7 +39,6 @@ export const CategoriesProvider = ({ user, children }) => {
             return;
           }
           console.log("Document written with ID:", docId);
-          setCategories((prev) => [...prev, { id: docId, name, color }]);
         })
         .catch((error) => {
           console.error("An error occurred:", error);
@@ -57,7 +56,6 @@ export const CategoriesProvider = ({ user, children }) => {
           console.error("An error occurred:", error);
         });
     }
-    setCategories((prev) => prev.filter((cat) => cat.id !== id));
   };
 
   return (

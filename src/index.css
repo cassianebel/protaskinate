@@ -11,7 +11,7 @@
   display: none;
 }
 
-button.completed {
+.completed {
   @apply opacity-50;
   &:hover,
   &:focus {

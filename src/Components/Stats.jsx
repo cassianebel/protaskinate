@@ -55,18 +55,25 @@ const Stats = ({ user, theme }) => {
       );
       setTotalTasks(tasks.length);
 
-      const completedToday = completed.filter((task) =>
-        isToday(task.completedTimestamp.toDate())
+      const completedToday = completed.filter(
+        (task) =>
+          task.completedTimestamp && isToday(task.completedTimestamp.toDate())
       );
 
-      const completedThisWeek = completed.filter((task) =>
-        isSameWeek(task.completedTimestamp.toDate(), today)
+      const completedThisWeek = completed.filter(
+        (task) =>
+          task.completedTimestamp &&
+          isSameWeek(task.completedTimestamp.toDate(), today)
       );
-      const completedThisMonth = completed.filter((task) =>
-        isSameMonth(task.completedTimestamp.toDate(), today)
+      const completedThisMonth = completed.filter(
+        (task) =>
+          task.completedTimestamp &&
+          isSameMonth(task.completedTimestamp.toDate(), today)
       );
-      const completedThisYear = completed.filter((task) =>
-        isSameYear(task.completedTimestamp.toDate(), today)
+      const completedThisYear = completed.filter(
+        (task) =>
+          task.completedTimestamp &&
+          isSameYear(task.completedTimestamp.toDate(), today)
       );
 
       animateNums(
