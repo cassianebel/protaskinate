@@ -73,7 +73,10 @@ const App = () => {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/signout" element={<SignOut />} />
-              <Route path="/kanban" element={<KanBan user={user} />} />
+              <Route
+                path="/kanban"
+                element={<KanBan user={user} theme={theme} />}
+              />
               <Route path="/profile" element={<Profile user={user} />} />
               <Route path="/create" element={<CreateTaskForm user={user} />} />
               <Route

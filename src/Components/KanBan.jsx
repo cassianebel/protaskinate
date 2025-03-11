@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   doc,
   updateDoc,
@@ -24,13 +24,17 @@ import {
   endOfMonth,
   isWithinInterval,
 } from "date-fns";
+import { Howl } from "howler";
 import { useCategories } from "../context/CategoriesContext";
+import { usePriorityColors } from "../context/PriorityColorContext";
+import Confetti from "react-confetti";
+import colorCodes from "../colors";
 import Column from "./Column";
 import TaskCard from "./TaskCard";
 import Link from "./Link";
 import PropTypes from "prop-types";
 
-const KanBan = ({ user }) => {
+const KanBan = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
@@ -41,7 +45,27 @@ const KanBan = ({ user }) => {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [partyModeDimensions, setPartyModeDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  const [showConfetti, setShowConfetti] = useState(false);
   const { categories } = useCategories();
+  const { priorityColors } = usePriorityColors();
+
+  const colors = {
+    low: colorCodes[theme + "low" + priorityColors.low],
+    medium: colorCodes[theme + "medium" + priorityColors.medium],
+    high: colorCodes["high" + priorityColors.high],
+  };
+
+  const popRef = useRef(null);
+
+  useEffect(() => {
+    popRef.current = new Howl({
+      src: ["./442265__crafty_juggler__pop-sound.mp3"],
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -230,6 +254,27 @@ const KanBan = ({ user }) => {
     setCompletedTasks(completed);
   }, [priorityFilter, dateFilter, categoryFilter, tasks]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setPartyModeDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const completeTaskAnimation = () => {
+    if (popRef.current) {
+      popRef.current.play();
+      setTimeout(() => popRef.current.stop(), 3000);
+    }
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 5000);
+  };
+
   const handleDragStart = (event) => {
     setActiveTask(event.active.data.current);
   };
@@ -247,6 +292,7 @@ const KanBan = ({ user }) => {
       let updatedFields = { status: newStatus, lastModifiedTimestamp: now };
 
       if (newStatus === "completed") {
+        completeTaskAnimation();
         updatedFields.completedTimestamp = now;
         updatedFields.timeZone =
           Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -264,16 +310,16 @@ const KanBan = ({ user }) => {
       //   )
       // );
 
-      if (newStatus === "completed") {
-        setCompletedTasks((prevCompletedTasks) => {
-          const updatedTask = { ...activeTask, ...updatedFields };
+      // if (newStatus === "completed") {
+      //   setCompletedTasks((prevCompletedTasks) => {
+      //     const updatedTask = { ...activeTask, ...updatedFields };
 
-          return [updatedTask, ...prevCompletedTasks].sort(
-            (a, b) =>
-              new Date(b.completedTimestamp) - new Date(a.completedTimestamp)
-          );
-        });
-      }
+      //     return [updatedTask, ...prevCompletedTasks].sort(
+      //       (a, b) =>
+      //         new Date(b.completedTimestamp) - new Date(a.completedTimestamp)
+      //     );
+      //   });
+      // }
     }
 
     setActiveTask(null);
@@ -281,6 +327,17 @@ const KanBan = ({ user }) => {
 
   return (
     <div className="w-full max-w-[1600px]">
+      {showConfetti && (
+        <Confetti
+          recycle={false}
+          numberOfPieces={300}
+          gravity={0.5}
+          tweenDuration={1000}
+          colors={[colors.low, colors.medium, colors.high]}
+          width={partyModeDimensions.width}
+          height={partyModeDimensions.height}
+        />
+      )}
       {!user ? (
         <div className="flex flex-col items-center justify-center">
           <Link text="New here? Sign up!" link="/signup" style="primary" />
