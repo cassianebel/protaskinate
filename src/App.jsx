@@ -15,6 +15,7 @@ import Stats from "./Components/Stats.jsx";
 import Modal from "./Components/Modal";
 import CalendarGrid from "./Components/CalendarGrid.jsx";
 import Navigation from "./Components/Navigation.jsx";
+import KanBan from "./Components/KanBan.jsx";
 
 const App = () => {
   const [theme, setTheme] = useState("light");
@@ -72,6 +73,7 @@ const App = () => {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/signout" element={<SignOut />} />
+              <Route path="/kanban" element={<KanBan user={user} />} />
               <Route path="/profile" element={<Profile user={user} />} />
               <Route path="/create" element={<CreateTaskForm user={user} />} />
               <Route
