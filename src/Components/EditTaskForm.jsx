@@ -84,12 +84,12 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
       categories: taskCategories,
       status: taskStatus,
       lastModifiedTimestamp: new Date(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
     const fetchedTask = await fetchTask(task.id);
     if (fetchedTask.data().status != "completed" && taskStatus == "completed") {
       updatedTask.completedTimestamp = new Date();
-      updatedTask.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
     if (
       fetchedTask.data().status != "in-progress" &&

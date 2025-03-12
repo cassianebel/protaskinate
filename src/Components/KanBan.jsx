@@ -302,24 +302,6 @@ const KanBan = ({ user, theme }) => {
 
       // Update Firestore
       await updateDoc(taskRef, updatedFields);
-
-      // Update local state
-      // setTasks((prevTasks) =>
-      //   prevTasks.map((task) =>
-      //     task.id === taskId ? { ...task, ...updatedFields } : task
-      //   )
-      // );
-
-      // if (newStatus === "completed") {
-      //   setCompletedTasks((prevCompletedTasks) => {
-      //     const updatedTask = { ...activeTask, ...updatedFields };
-
-      //     return [updatedTask, ...prevCompletedTasks].sort(
-      //       (a, b) =>
-      //         new Date(b.completedTimestamp) - new Date(a.completedTimestamp)
-      //     );
-      //   });
-      // }
     }
 
     setActiveTask(null);

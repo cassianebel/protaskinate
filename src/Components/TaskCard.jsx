@@ -38,6 +38,12 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
       ? `${task.repeatNumber} ${task.repeatUnit}s`
       : task.repeatUnit;
 
+  const todayLocal = new Date().toISOString().split("T")[0];
+  const pastDue =
+    task.dueDate < todayLocal && task.status == "to-do"
+      ? "motion-safe:animate-wiggle hover:animate-none"
+      : "";
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -54,7 +60,8 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
           "ps-4 my-6 rounded-md shadow-md",
           priorityColors[task.priority],
           task.priority,
-          task.status
+          task.status,
+          pastDue
         )}
       >
         <div className="flex gap-2 w-full bg-zinc-100 dark:bg-zinc-900 p-4 border-2 dark:border-1 rounded-lg">

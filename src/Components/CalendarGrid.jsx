@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDaysInMonth } from "date-fns";
+import { getDaysInMonth, isPast } from "date-fns";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { fetchTask } from "../firestore";
@@ -147,6 +147,11 @@ const CalendarGrid = ({ user }) => {
     openModal();
   };
 
+  const isPastDue = (dueDate, status) => {
+    console.log(dueDate);
+    return isPast(dueDate) && status == "to-do";
+  };
+
   return (
     <div className="w-full px-4 mb-20">
       <div className="flex items-center justify-center gap-8">
@@ -183,12 +188,16 @@ const CalendarGrid = ({ user }) => {
               .filter((event) => event.date.toString() == day.date.toString())
               .map((task) => (
                 <button
-                  key={task.title}
+                  key={task.id}
                   className={clsx(
-                    "w-11/12 text-start mx-2 ps-2 shadow rounded-sm cursor-pointer hover:scale-110 transition-all ease-in ",
+                    "w-11/12 text-start mx-2 ps-2 shadow rounded-sm cursor-pointer hover:scale-110 transition-all ease-in",
                     priorityColors[task.priority],
                     task.priority,
-                    task.status
+                    task.status,
+                    {
+                      "motion-safe:animate-wiggle hover:animate-none":
+                        isPastDue(task.date, task.status),
+                    }
                   )}
                   onClick={() => fetchDetails(task)}
                 >
