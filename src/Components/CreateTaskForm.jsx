@@ -34,13 +34,13 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
     } else if (repeatUnit != "never" && repeatNumber < 1) {
       setRepeatError("please choose a REPEAT FREQUENCY");
       return;
-    } else if (
-      repeatNumber > 0 &&
-      repeatUnit != "never" &&
-      taskDueDate == null
-    ) {
-      setRepeatError("please choose a DUE DATE for repeating tasks");
-      return;
+      // } else if (
+      //   repeatNumber > 0 &&
+      //   repeatUnit != "never" &&
+      //   taskDueDate == null
+      // ) {
+      //   setRepeatError("please choose a DUE DATE for repeating tasks");
+      //   return;
     } else {
       setRepeatError(null);
     }
@@ -136,7 +136,10 @@ const CreateTaskForm = ({ user, date, closeModal }) => {
               </p>
             )}
             <fieldset>
-              <legend className="text-lg ">Repeat</legend>
+              <legend className="text-lg ">
+                Repeat{" "}
+                <span className="text-sm">(based on completion date)</span>
+              </legend>
               <div className="flex items-center gap-2">
                 <div className="">
                   <label

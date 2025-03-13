@@ -176,21 +176,18 @@ const KanBan = ({ user, theme }) => {
     });
     const priorityOrder = { high: 1, medium: 2, low: 3 };
     toDo.sort((a, b) => {
-      // First, sort by priority
-      const priorityDiff =
-        priorityOrder[a.priority] - priorityOrder[b.priority];
-      if (priorityDiff !== 0) return priorityDiff;
-
-      // If priorities are the same, sort by dueDate (earliest first)
+      // If both tasks have due dates, sort by due date (earliest first)
       if (a.dueDate && b.dueDate) {
-        return new Date(a.dueDate) - new Date(b.dueDate);
+        const dateDiff = new Date(a.dueDate) - new Date(b.dueDate);
+        if (dateDiff !== 0) return dateDiff;
       }
 
       // Tasks with a dueDate should come before those without
       if (!a.dueDate) return 1;
       if (!b.dueDate) return -1;
 
-      return 0;
+      // If due dates are the same (or both missing), sort by priority
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
     let inProgress = tasks.filter((task) => {
       let parsedDate = null;
@@ -211,21 +208,18 @@ const KanBan = ({ user, theme }) => {
       );
     });
     inProgress.sort((a, b) => {
-      // First, sort by priority
-      const progressPriorityDiff =
-        priorityOrder[a.priority] - priorityOrder[b.priority];
-      if (progressPriorityDiff !== 0) return progressPriorityDiff;
-
-      // If priorities are the same, sort by dueDate (earliest first)
+      // If both tasks have due dates, sort by due date (earliest first)
       if (a.dueDate && b.dueDate) {
-        return new Date(a.dueDate) - new Date(b.dueDate);
+        const dateDiff = new Date(a.dueDate) - new Date(b.dueDate);
+        if (dateDiff !== 0) return dateDiff;
       }
 
       // Tasks with a dueDate should come before those without
       if (!a.dueDate) return 1;
       if (!b.dueDate) return -1;
 
-      return 0;
+      // If due dates are the same (or both missing), sort by priority
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
     let completed = tasks.filter((task) => {
       let parsedDate = null;
@@ -388,7 +382,7 @@ const KanBan = ({ user, theme }) => {
                 id="in-progress"
                 title="Current Task"
                 tasks={inProgressTasks}
-                text="What are you working on?"
+                text="Mastering the art of avoidance, I see."
                 user={user}
               />
               <div className="lg:order-first">
@@ -397,7 +391,7 @@ const KanBan = ({ user, theme }) => {
                   id="to-do"
                   title="To-Dos"
                   tasks={toDoTasks}
-                  text="Let's get protaskinating!"
+                  text="This is where good intentions go to die."
                   user={user}
                 />
               </div>
@@ -406,7 +400,7 @@ const KanBan = ({ user, theme }) => {
                 id="completed"
                 title="Completed Tasks"
                 tasks={completedTasks}
-                text="Are you protaskinating?"
+                text="Nothing yet? That's cool."
                 user={user}
               />
               <DragOverlay>

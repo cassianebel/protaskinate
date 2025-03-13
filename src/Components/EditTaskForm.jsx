@@ -44,7 +44,7 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
           console.error("An error occurred:", error);
         });
     }
-  }, [user]);
+  }, [user, task.id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,13 +63,13 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
     } else if (repeatUnit != "never" && repeatNumber < 1) {
       setRepeatError("please choose a REPEAT FREQUENCY");
       return;
-    } else if (
-      repeatNumber > 0 &&
-      repeatUnit != "never" &&
-      taskDueDate == null
-    ) {
-      setRepeatError("please choose a DUE DATE for repeating tasks");
-      return;
+      // } else if (
+      //   repeatNumber > 0 &&
+      //   repeatUnit != "never" &&
+      //   taskDueDate == null
+      // ) {
+      //   setRepeatError("please choose a DUE DATE for repeating tasks");
+      //   return;
     } else {
       setRepeatError(null);
     }
@@ -162,7 +162,10 @@ const EditTaskForm = ({ task, user, closeModal, handleTaskUpdate }) => {
               </p>
             )}
             <fieldset>
-              <legend className="text-lg ">Repeat</legend>
+              <legend className="text-lg ">
+                Repeat{" "}
+                <span className="text-sm">(based on completion date)</span>
+              </legend>
               <div className="flex items-center gap-2">
                 <div className="">
                   <label

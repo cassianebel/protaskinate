@@ -50,6 +50,19 @@ const CalendarGrid = ({ user }) => {
       const adjustedDate = new Date(
         date.getTime() + date.getTimezoneOffset() * 60000
       ); // Shift back to UTC
+      const isPastDue = () => {
+        if (task.dueDate) {
+          const todayLocal = new Date();
+          todayLocal.setHours(0, 0, 0, 0); // Normalize today’s time to midnight
+
+          const [year, month, day] = task.dueDate.split("-").map(Number); // Extract components
+          const dueDate = new Date();
+          dueDate.setFullYear(year, month - 1, day); // Ensure local time
+          dueDate.setHours(0, 0, 0, 0); // Normalize to midnight local time
+
+          return dueDate < todayLocal && task.status === "to-do";
+        }
+      };
       return {
         id: task.id,
         title: task.title,
@@ -57,6 +70,9 @@ const CalendarGrid = ({ user }) => {
         repeatNumber: task.repeatNumber,
         priority: task.priority,
         status: task.status,
+        isPastDue: isPastDue()
+          ? "motion-safe:animate-wiggle hover:animate-none"
+          : "",
       };
     });
     console.log(taskEvents);
@@ -147,11 +163,6 @@ const CalendarGrid = ({ user }) => {
     openModal();
   };
 
-  const isPastDue = (dueDate, status) => {
-    console.log(dueDate);
-    return isPast(dueDate) && status == "to-do";
-  };
-
   return (
     <div className="w-full px-4 mb-20">
       <div className="flex items-center justify-center gap-8">
@@ -194,10 +205,7 @@ const CalendarGrid = ({ user }) => {
                     priorityColors[task.priority],
                     task.priority,
                     task.status,
-                    {
-                      "motion-safe:animate-wiggle hover:animate-none":
-                        isPastDue(task.date, task.status),
-                    }
+                    task.isPastDue
                   )}
                   onClick={() => fetchDetails(task)}
                 >

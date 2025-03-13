@@ -38,11 +38,19 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
       ? `${task.repeatNumber} ${task.repeatUnit}s`
       : task.repeatUnit;
 
-  const todayLocal = new Date().toISOString().split("T")[0];
-  const pastDue =
-    task.dueDate < todayLocal && task.status == "to-do"
-      ? "motion-safe:animate-wiggle hover:animate-none"
-      : "";
+  const isPastDue = () => {
+    if (task.dueDate) {
+      const todayLocal = new Date();
+      todayLocal.setHours(0, 0, 0, 0); // Normalize today’s time to midnight
+
+      const [year, month, day] = task.dueDate.split("-").map(Number); // Extract components
+      const dueDate = new Date();
+      dueDate.setFullYear(year, month - 1, day); // Ensure local time
+      dueDate.setHours(0, 0, 0, 0); // Normalize to midnight local time
+
+      return dueDate < todayLocal && task.status === "to-do";
+    }
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -61,7 +69,7 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
           priorityColors[task.priority],
           task.priority,
           task.status,
-          pastDue
+          { "motion-safe:animate-wiggle hover:animate-none": isPastDue() }
         )}
       >
         <div className="flex gap-2 w-full bg-zinc-100 dark:bg-zinc-900 p-4 border-2 dark:border-1 rounded-lg">
@@ -75,16 +83,19 @@ const TaskCard = ({ task, user, handleTaskUpdate }) => {
             <p className="my-2 text-zinc-600 dark:text-zinc-400">
               {task.description}
             </p>
-            {task.dueDate && (
-              <p className="flex gap-3 items-center font-light mt-2 shrink-0">
-                <LuCalendarClock className="text-xl" /> {formattedDueDate}
-                {task.repeatNumber > 0 && (
-                  <>
-                    <FaRepeat /> <span>Every {formattedRepeat}</span>
-                  </>
-                )}
-              </p>
-            )}
+
+            <p className="flex gap-3 items-center font-light mt-2 shrink-0">
+              {task.dueDate && (
+                <>
+                  <LuCalendarClock className="text-xl" /> {formattedDueDate}
+                </>
+              )}
+              {task.repeatNumber > 0 && (
+                <>
+                  <FaRepeat /> <span>Every {formattedRepeat}</span>
+                </>
+              )}
+            </p>
             {task.categories && (
               <ul className="mt-3 flex flex-wrap gap-3">
                 {task.categories
