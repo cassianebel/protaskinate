@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import { getDaysInMonth } from "date-fns";
 import { fetchTask } from "../firestore";
-import { usePriorityColors } from "../context/PriorityColorContext";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { useTasks } from "../context/TasksContext";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaCirclePlus,
-  FaCircleCheck,
-  FaRepeat,
-} from "react-icons/fa6";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Modal from "./Modal";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
-import clsx from "clsx";
+import CalendarDay from "./CalendarDay";
+import CalendarTask from "./CalendarTask";
 import PropTypes from "prop-types";
 
 const CalendarGrid = ({ user }) => {
@@ -23,7 +20,7 @@ const CalendarGrid = ({ user }) => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [isEmptySlot, setIsEmptySlot] = useState(false);
   const [slotInfo, setSlotInfo] = useState(null);
-  const { priorityColors } = usePriorityColors();
+  const [activeTask, setActiveTask] = useState(null);
   const { tasks } = useTasks();
 
   useEffect(() => {
@@ -146,6 +143,34 @@ const CalendarGrid = ({ user }) => {
     openModal();
   };
 
+  const handleDragStart = (event) => {
+    setActiveTask(event.active.data.current);
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const taskId = active.id;
+    const newDueDate = new Date(over.id);
+    const formattedDate = newDueDate.toISOString().split("T")[0];
+    console.log(formattedDate);
+    const now = new Date();
+
+    if (activeTask.dueDate !== formattedDate) {
+      const taskRef = doc(db, "tasks", taskId);
+      let updatedFields = {
+        dueDate: formattedDate,
+        lastModifiedTimestamp: now,
+      };
+
+      // Update Firestore
+      await updateDoc(taskRef, updatedFields);
+    }
+
+    setActiveTask(null);
+  };
+
   return (
     <div className="w-full px-4 mb-20">
       <div className="flex items-center justify-center gap-8">
@@ -166,54 +191,22 @@ const CalendarGrid = ({ user }) => {
         </button>
       </div>
       <div className="w-full max-w-[1500px] grid grid-cols-7 gap-1 mx-auto">
-        {days.map((day) => (
-          <div
-            key={day.date}
-            className={`w-full min-h-28 rounded-md flex flex-col gap-1 ${
-              !day.isCurrentMonth
-                ? "bg-zinc-300 dark:bg-zinc-900"
-                : "bg-zinc-100 dark:bg-zinc-800"
-            }`}
-          >
-            <span className="block text-end mt-1 me-2">
-              {day.date.getDate()}
-            </span>
-            {events
-              .filter((event) => event.date.toString() == day.date.toString())
-              .map((task) => (
-                <button
-                  key={task.id}
-                  className={clsx(
-                    "w-11/12 text-start mx-2 ps-2 shadow rounded-sm cursor-pointer hover:scale-110 transition-all ease-in",
-                    priorityColors[task.priority],
-                    task.priority,
-                    task.status,
-                    task.isPastDue
-                  )}
-                  onClick={() => fetchDetails(task)}
-                >
-                  <div className="flex gap-2 items-center justify-between border-1 rounded-sm bg-white dark:bg-zinc-950 dark:text-zinc-400 px-2 py-1">
-                    <p className="truncate">
-                      {task.status == "completed" && (
-                        <FaCircleCheck className="inline me-2 -mt-1" />
-                      )}
-                      {task.title}
-                    </p>
-                    {task.repeatNumber > 0 && <FaRepeat />}
-                  </div>
-                </button>
-              ))}
-            <button
-              onClick={() => handleEmptySlot(day.date)}
-              className="grow w-full cursor-pointer pt-1 pb-2 group/item"
-            >
-              <span className="group/edit opacity-0 group-hover/item:opacity-100 duration-300 ease-in-out flex items-center justify-center gap-2">
-                <FaCirclePlus />
-                <span className="pb-1">add new task</span>
-              </span>
-            </button>
-          </div>
-        ))}
+        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          {days.map((day) => (
+            <CalendarDay
+              key={day.date}
+              id={day.date}
+              day={day}
+              events={events}
+              fetchDetails={fetchDetails}
+              handleEmptySlot={handleEmptySlot}
+            />
+          ))}
+
+          <DragOverlay>
+            {activeTask ? <CalendarTask task={activeTask} /> : null}
+          </DragOverlay>
+        </DndContext>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {isEmptySlot ? (
