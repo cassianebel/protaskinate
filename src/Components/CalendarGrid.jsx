@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { getDaysInMonth, isPast } from "date-fns";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { db } from "../firebase";
+import { getDaysInMonth } from "date-fns";
 import { fetchTask } from "../firestore";
 import { usePriorityColors } from "../context/PriorityColorContext";
+import { useTasks } from "../context/TasksContext";
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -19,29 +18,13 @@ import PropTypes from "prop-types";
 
 const CalendarGrid = ({ user }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskDetails, setTaskDetails] = useState(null);
   const [isEmptySlot, setIsEmptySlot] = useState(false);
   const [slotInfo, setSlotInfo] = useState(null);
   const { priorityColors } = usePriorityColors();
-
-  useEffect(() => {
-    if (!user) return;
-
-    const tasksRef = collection(db, "tasks");
-    const q = query(tasksRef, where("userId", "==", user.uid));
-
-    // Set up Firestore listener
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tasks = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setTasks(tasks);
-    });
-
-    // Cleanup listener on unmount
-    return () => unsubscribe();
-  }, [user]);
+  const { tasks } = useTasks();
 
   useEffect(() => {
     const tasksDue = tasks.filter((task) => task.dueDate != null);

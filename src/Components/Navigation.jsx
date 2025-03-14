@@ -4,16 +4,22 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaCirclePlus, FaChartPie } from "react-icons/fa6";
 import { LuCalendarDays } from "react-icons/lu";
 import { BsKanbanFill } from "react-icons/bs";
+import { useTasks } from "../context/TasksContext";
 import PropTypes from "prop-types";
 
-const Navigation = ({ openModal, toggleTheme }) => {
+const Navigation = ({ openModal, toggleTheme, user }) => {
+  const { tasks } = useTasks();
   return (
     <nav className="flex items-center gap-8 lg:gap-4 xl:gap-8 text-2xl font-bold">
       <button
         onClick={() => openModal()}
         className="flex items-center gap-2 text-2xl p-2 cursor-pointer group opacity-80 hover:opacity-100 duration-300 "
       >
-        <FaCirclePlus className="md:scale-90 group-hover:scale-110 duration-300 " />
+        <FaCirclePlus
+          className={`md:scale-90 group-hover:scale-110 duration-300 ${
+            user && tasks.length < 1 && "animate-bounce"
+          } group-hover:animate-none`}
+        />
         <span className="hidden lg:block text-base">New Task</span>
       </button>
 

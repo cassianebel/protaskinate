@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext } from "react";
 import { addCategory, deleteCategory } from "../firestore";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
+import PropTypes from "prop-types";
 
 const CategoriesContext = createContext();
 
@@ -65,6 +66,11 @@ export const CategoriesProvider = ({ user, children }) => {
       {children}
     </CategoriesContext.Provider>
   );
+};
+
+CategoriesProvider.propTypes = {
+  user: PropTypes.object,
+  children: PropTypes.node.isRequired,
 };
 
 // Custom hook to use the Categories Context

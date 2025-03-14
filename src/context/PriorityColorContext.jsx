@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { fetchUserFromDatabase } from "../firestore";
+import PropTypes from "prop-types";
 
 const PriorityColorContext = createContext();
 
@@ -36,6 +37,11 @@ export function PriorityColorProvider({ user, children }) {
     </PriorityColorContext.Provider>
   );
 }
+
+PriorityColorProvider.propTypes = {
+  user: PropTypes.object,
+  children: PropTypes.node.isRequired,
+};
 
 export function usePriorityColors() {
   return useContext(PriorityColorContext);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { fetchUsersTasks } from "../firestore";
 import { isToday, isSameWeek, isSameMonth, isSameYear, format } from "date-fns";
+import { useTasks } from "../context/TasksContext";
 import PriorityDonut from "./PriorityDonut";
 import StatusDonut from "./StatusDonut";
 import Stat from "./Stat";
@@ -9,7 +9,6 @@ import PropTypes from "prop-types";
 
 const Stats = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [error, setError] = useState(null);
   const [totalCompletedTasks, setTotalCompletedTasks] = useState(0);
@@ -18,26 +17,8 @@ const Stats = ({ user, theme }) => {
   const [tasksCompletedThisWeek, setTasksCompletedThisWeek] = useState(0);
   const [tasksCompletedThisMonth, setTasksCompletedThisMonth] = useState(0);
   const [tasksCompletedThisYear, setTasksCompletedThisYear] = useState(0);
+  const { tasks } = useTasks();
   const today = new Date();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      if (user) {
-        try {
-          const tasks = await fetchUsersTasks(user.uid);
-          setTasks(tasks);
-          setLoading(false);
-        } catch (error) {
-          setError(error.message);
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, [user]);
 
   useEffect(() => {
     if (tasks.length > 0) {

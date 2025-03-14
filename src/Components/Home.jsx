@@ -2,6 +2,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaChartPie } from "react-icons/fa6";
 import { BsKanbanFill } from "react-icons/bs";
 import { LuCalendarDays } from "react-icons/lu";
+import { NavLink } from "react-router-dom";
 import SignUp from "./SignUp";
 import PropTypes from "prop-types";
 
@@ -64,7 +65,32 @@ const Home = ({ user }) => {
           </p>
         </div>
         <div className="text-start md:p-10 bg-zinc-100 dark:bg-zinc-900 rounded-lg shadow mb-10">
-          <SignUp />
+          {user ? (
+            <>
+              <p>What are you still doing here?</p>
+
+              <p className="my-10">
+                Check out the{" "}
+                <NavLink
+                  to="/kanban"
+                  className="inline-flex gap-2 mx-2 items-center font-bold"
+                >
+                  <BsKanbanFill /> KanBan
+                </NavLink>{" "}
+                or the{" "}
+                <NavLink
+                  to="/calendar"
+                  className="inline-flex gap-2 mx-2 items-center font-bold"
+                >
+                  <LuCalendarDays /> Calendar
+                </NavLink>
+              </p>
+
+              <p>And start adding some tasks already!</p>
+            </>
+          ) : (
+            <SignUp />
+          )}
         </div>
       </div>
     </div>

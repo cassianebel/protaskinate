@@ -18,7 +18,7 @@ const SignUp = () => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      navigate("/kanban");
     } catch (error) {
       console.log(error.code);
       console.error(error);

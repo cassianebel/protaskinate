@@ -1,12 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  doc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  onSnapshot,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
@@ -27,6 +20,7 @@ import {
 import { Howl } from "howler";
 import { useCategories } from "../context/CategoriesContext";
 import { usePriorityColors } from "../context/PriorityColorContext";
+import { useTasks } from "../context/TasksContext";
 import Confetti from "react-confetti";
 import colorCodes from "../colors";
 import Column from "./Column";
@@ -36,7 +30,6 @@ import PropTypes from "prop-types";
 
 const KanBan = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [toDoTasks, setToDoTasks] = useState([]);
@@ -52,6 +45,7 @@ const KanBan = ({ user, theme }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const { categories } = useCategories();
   const { priorityColors } = usePriorityColors();
+  const { tasks } = useTasks();
 
   const colors = {
     low: colorCodes[theme + "low" + priorityColors.low],
@@ -68,62 +62,40 @@ const KanBan = ({ user, theme }) => {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
-
-    const tasksRef = collection(db, "tasks");
-    const q = query(tasksRef, where("userId", "==", user.uid));
-
-    // Set up Firestore listener
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tasks = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setTasks(tasks);
-    });
-
-    // Cleanup listener on unmount
-    return () => unsubscribe();
-  }, [user]);
-
-  useEffect(() => {
     if (tasks.length > 0) {
       let toDo = tasks.filter((task) => task.status === "to-do");
       // Sort tasks by priority and due date
       const priorityOrder = { high: 1, medium: 2, low: 3 };
       toDo.sort((a, b) => {
-        // First, sort by priority
-        const priorityDiff =
-          priorityOrder[a.priority] - priorityOrder[b.priority];
-        if (priorityDiff !== 0) return priorityDiff;
-
-        // If priorities are the same, sort by dueDate (earliest first)
+        // If both tasks have due dates, sort by due date (earliest first)
         if (a.dueDate && b.dueDate) {
-          return new Date(a.dueDate) - new Date(b.dueDate);
+          const dateDiff = new Date(a.dueDate) - new Date(b.dueDate);
+          if (dateDiff !== 0) return dateDiff;
         }
 
         // Tasks with a dueDate should come before those without
         if (!a.dueDate) return 1;
         if (!b.dueDate) return -1;
 
-        return 0;
+        // If due dates are the same (or both missing), sort by priority
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
       });
 
       let inProgress = tasks.filter((task) => task.status === "in-progress");
       // Sort tasks by priority and due date
       inProgress.sort((a, b) => {
-        // First, sort by priority
-        const progressPriorityDiff =
-          priorityOrder[a.priority] - priorityOrder[b.priority];
-        if (progressPriorityDiff !== 0) return progressPriorityDiff;
-
-        // If priorities are the same, sort by dueDate (earliest first)
+        // If both tasks have due dates, sort by due date (earliest first)
         if (a.dueDate && b.dueDate) {
-          return new Date(a.dueDate) - new Date(b.dueDate);
+          const dateDiff = new Date(a.dueDate) - new Date(b.dueDate);
+          if (dateDiff !== 0) return dateDiff;
         }
 
         // Tasks with a dueDate should come before those without
         if (!a.dueDate) return 1;
         if (!b.dueDate) return -1;
 
-        return 0;
+        // If due dates are the same (or both missing), sort by priority
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
       });
 
       let completed = tasks.filter((task) => task.status === "completed");
