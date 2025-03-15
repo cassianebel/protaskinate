@@ -6,6 +6,7 @@ import { fetchTask } from "../firestore";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { useTasks } from "../context/TasksContext";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { useCategories } from "../context/CategoriesContext";
 import Modal from "./Modal";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
@@ -21,7 +22,11 @@ const CalendarGrid = ({ user }) => {
   const [isEmptySlot, setIsEmptySlot] = useState(false);
   const [slotInfo, setSlotInfo] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const { tasks } = useTasks();
+  const { categories } = useCategories();
 
   useEffect(() => {
     const tasksDue = tasks.filter((task) => task.dueDate != null);
@@ -50,14 +55,23 @@ const CalendarGrid = ({ user }) => {
         repeatNumber: task.repeatNumber,
         priority: task.priority,
         status: task.status,
+        categories: task.categories,
         isPastDue: isPastDue()
           ? "motion-safe:animate-wiggle hover:animate-none"
           : "",
       };
     });
-    console.log(taskEvents);
-    setEvents(taskEvents);
-  }, [tasks]);
+    const filteredEvents = taskEvents.filter((task) => {
+      const matchesCategory =
+        categoryFilter === "all" || task.categories?.includes(categoryFilter);
+      const matchesPriority =
+        priorityFilter === "all" || task.priority === priorityFilter;
+      const matchesStatus =
+        statusFilter === "all" || task.status === statusFilter;
+      return matchesCategory && matchesPriority && matchesStatus;
+    });
+    setEvents(filteredEvents);
+  }, [priorityFilter, statusFilter, categoryFilter, tasks]);
 
   const monthName = currentDate.toLocaleString("default", { month: "long" });
   let days = [];
@@ -173,7 +187,51 @@ const CalendarGrid = ({ user }) => {
 
   return (
     <div className="w-full px-4 mb-20">
-      <div className="flex items-center justify-center gap-8">
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col md:flex-row gap-8 mb-4 justify-center items-center mx-10">
+          {categories.length > 0 ? (
+            <div className="flex gap-2 items-center">
+              <label className="text-end leading-5">Filter by Category</label>
+              <select
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
+              >
+                <option value="all">All</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
+          <div className="flex gap-2 items-center">
+            <label className="text-end leading-5">Filter by Priority</label>
+            <select
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              className="bg-zinc-50 dark:bg-zinc-800  border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
+            >
+              <option value="all">All</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div className="flex gap-2 items-center">
+            <label className="text-end leading-5">Filter by Status</label>
+            <select
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 p-2 rounded-md font-medium"
+            >
+              <option value="all">All</option>
+              <option value="to-do">To-Do</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-center gap-8 mt-6">
         <button
           onClick={() => prevMonth()}
           className="hover:scale-120 duration-200 p-3 cursor-pointer"
