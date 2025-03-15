@@ -16,6 +16,8 @@ import {
   startOfMonth,
   endOfMonth,
   isWithinInterval,
+  startOfDay,
+  endOfDay,
 } from "date-fns";
 import { Howl } from "howler";
 import { useCategories } from "../context/CategoriesContext";
@@ -129,16 +131,17 @@ const KanBan = ({ user, theme }) => {
         }),
     };
     let toDo = tasks.filter((task) => {
-      let parsedDate = null;
+      let dueDate = null;
       if (task.dueDate) {
-        parsedDate = parseISO(task.dueDate);
+        let parsedDate = parseISO(task.dueDate);
+        dueDate = endOfDay(parsedDate);
       }
       const matchesCategory =
         categoryFilter === "all" || task.categories?.includes(categoryFilter);
       const matchesPriority =
         priorityFilter === "all" || task.priority === priorityFilter;
       const matchesDate =
-        dateFilter === "all" || dateFilters[dateFilter]?.(parsedDate);
+        dateFilter === "all" || dateFilters[dateFilter]?.(dueDate);
       return (
         task.status === "to-do" &&
         matchesCategory &&
@@ -162,16 +165,17 @@ const KanBan = ({ user, theme }) => {
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
     let inProgress = tasks.filter((task) => {
-      let parsedDate = null;
+      let dueDate = null;
       if (task.dueDate) {
-        parsedDate = parseISO(task.dueDate);
+        let parsedDate = parseISO(task.dueDate);
+        dueDate = endOfDay(parsedDate);
       }
       const matchesCategory =
         categoryFilter === "all" || task.categories?.includes(categoryFilter);
       const matchesPriority =
         priorityFilter === "all" || task.priority === priorityFilter;
       const matchesDate =
-        dateFilter === "all" || dateFilters[dateFilter]?.(parsedDate);
+        dateFilter === "all" || dateFilters[dateFilter]?.(dueDate);
       return (
         task.status === "in-progress" &&
         matchesCategory &&
@@ -194,16 +198,17 @@ const KanBan = ({ user, theme }) => {
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
     let completed = tasks.filter((task) => {
-      let parsedDate = null;
+      let dueDate = null;
       if (task.dueDate) {
-        parsedDate = parseISO(task.dueDate);
+        let parsedDate = parseISO(task.dueDate);
+        dueDate = endOfDay(parsedDate);
       }
       const matchesCategory =
         categoryFilter === "all" || task.categories?.includes(categoryFilter);
       const matchesPriority =
         priorityFilter === "all" || task.priority === priorityFilter;
       const matchesDate =
-        dateFilter === "all" || dateFilters[dateFilter]?.(parsedDate);
+        dateFilter === "all" || dateFilters[dateFilter]?.(dueDate);
       return (
         task.status === "completed" &&
         matchesCategory &&

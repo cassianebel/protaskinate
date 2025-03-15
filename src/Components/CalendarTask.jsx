@@ -30,9 +30,14 @@ const CalendarTask = ({ task, fetchDetails }) => {
           onClick={() => fetchDetails(task)}
         >
           {task.status == "completed" && (
-            <FaCircleCheck className="inline me-2 -mt-1" />
+            <span>
+              <FaCircleCheck className="inline me-2 -mt-1" />
+              {task.title}
+            </span>
           )}
-          {task.title}
+          {task.status != "completed" && (
+            <span className="font-medium">{task.title}</span>
+          )}
         </button>
         <div {...listeners} {...attributes} className="cursor-grab">
           <MdDragIndicator />
