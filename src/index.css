@@ -25,7 +25,7 @@
   animation: none;
 }
 
-.completed {
+.completed:not(.modal .completed) {
   @apply opacity-50;
   &:hover,
   &:focus {

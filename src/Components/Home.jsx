@@ -17,9 +17,9 @@ const Home = ({ user }) => {
         Ah, yes... Another task manager app — because clearly, the world needed
         one more.
       </p>
-      <div className="lg:flex gap-20 xl:gap-40 mx-auto w-fit">
+      <div className="lg:flex items-center gap-20 xl:gap-40 mx-auto w-fit">
         <div className="lg:text-left">
-          <h3 className="mt-20 text-3xl">
+          <h3 className="my-10 text-3xl">
             Our Cutting-Edge Procrastination Features:
           </h3>
 
@@ -64,9 +64,9 @@ const Home = ({ user }) => {
             eventually.
           </p>
         </div>
-        <div className="text-start md:p-10 bg-zinc-100 dark:bg-zinc-900 rounded-lg shadow mb-10">
+        <div className="text-start md:p-10 bg-zinc-100 dark:bg-zinc-900 rounded-lg shadow my-10">
           {user ? (
-            <>
+            <div className="p-10">
               <p>What are you still doing here?</p>
 
               <p className="my-10">
@@ -87,7 +87,7 @@ const Home = ({ user }) => {
               </p>
 
               <p>And start adding some tasks already!</p>
-            </>
+            </div>
           ) : (
             <SignUp />
           )}

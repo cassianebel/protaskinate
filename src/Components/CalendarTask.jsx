@@ -23,12 +23,10 @@ const CalendarTask = ({ task, fetchDetails }) => {
         task.isPastDue
       )}
     >
-      <div className="flex gap-2 items-center justify-between border-1 rounded-sm bg-white dark:bg-zinc-950 dark:text-zinc-400 px-2 py-1">
-        <div {...listeners} {...attributes} className="cursor-grab">
-          <MdDragIndicator />
-        </div>
+      <div className="flex gap-2 items-center border-1 rounded-sm bg-white dark:bg-zinc-950 dark:text-zinc-400 px-2 py-1">
+        {/* {task.repeatNumber > 0 && <FaRepeat />} */}
         <button
-          className="truncate cursor-pointer"
+          className="truncate grow cursor-pointer text-start w-100"
           onClick={() => fetchDetails(task)}
         >
           {task.status == "completed" && (
@@ -36,7 +34,9 @@ const CalendarTask = ({ task, fetchDetails }) => {
           )}
           {task.title}
         </button>
-        {task.repeatNumber > 0 && <FaRepeat />}
+        <div {...listeners} {...attributes} className="cursor-grab">
+          <MdDragIndicator />
+        </div>
       </div>
     </div>
   );
