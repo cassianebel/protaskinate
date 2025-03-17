@@ -50,7 +50,7 @@ const App = () => {
 
   return (
     <CategoriesProvider user={user}>
-      <PriorityColorProvider user={user}>
+      <PriorityColorProvider key={user?.uid} user={user}>
         <TasksProvider user={user}>
           <div className={theme}>
             <div className="bg-zinc-200 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-extralight min-h-screen flex flex-col items-center justify-between md:justify-start gap-10 duration-300 ease-in-out">

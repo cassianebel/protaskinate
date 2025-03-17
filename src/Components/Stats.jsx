@@ -94,7 +94,7 @@ const Stats = ({ user, theme }) => {
     <div className="flex flex-col items-center justify-center">
       <Link text="New here? Sign up!" link="/signup" style="primary" />
       <Link
-        text="Already protaskanating? Sign in!"
+        text="Already a Protaskinator? Sign in!"
         link="/signin"
         style="secondary"
       />

@@ -22,7 +22,7 @@ const SignIn = () => {
       const authUser = results.user;
       // Create or update user in Firestore
       await createUserInDatabase({ email: authUser.email, uid: authUser.uid });
-      navigate("/");
+      navigate("/kanban");
     } catch (error) {
       console.log(error.code);
       console.error(error);

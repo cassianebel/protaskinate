@@ -5,11 +5,7 @@ import PropTypes from "prop-types";
 const PriorityColorContext = createContext();
 
 export function PriorityColorProvider({ user, children }) {
-  const [priorityColors, setPriorityColors] = useState({
-    low: "purple",
-    medium: "purple",
-    high: "purple",
-  });
+  const [priorityColors, setPriorityColors] = useState({});
 
   useEffect(() => {
     if (user) {
@@ -17,6 +13,12 @@ export function PriorityColorProvider({ user, children }) {
         .then((userData) => {
           if (userData && userData.priorityColors) {
             setPriorityColors(userData.priorityColors);
+          } else {
+            setPriorityColors({
+              low: "purple",
+              medium: "purple",
+              high: "purple",
+            });
           }
         })
         .catch((error) => {

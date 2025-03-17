@@ -7,11 +7,7 @@ import PropTypes from "prop-types";
 const CategoriesContext = createContext();
 
 export const CategoriesProvider = ({ user, children }) => {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Work", color: "blue" },
-    { id: 2, name: "Personal", color: "red" },
-    { id: 3, name: "Errands", color: "orange" },
-  ]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (!user) return;
