@@ -12,7 +12,7 @@ const Column = ({ id, title, tasks, text, user }) => {
 
   return (
     <div ref={setNodeRef} className="h-full">
-      <h2 className="text-2xl text-center m-4">{title}</h2>
+      <h2 className="text-3xl font-bold text-center m-4">{title}</h2>
       {tasks.length === 0 && <p className="text-center">{text}</p>}
       {tasks.map((task) => (
         <TaskCard

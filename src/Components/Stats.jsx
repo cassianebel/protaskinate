@@ -101,14 +101,14 @@ const Stats = ({ user, theme }) => {
     </div>
   ) : (
     <div>
-      <h2 className="text-2xl text-center font-bold mb-20">Stats</h2>
+      <h2 className="text-center text-3xl font-bold mb-20">Stats</h2>
       <h3 className="text-lg text-center font-bold mb-4">Completed Tasks</h3>
       <div className="flex flex-row flex-wrap gap-10 items-center justify-center mx-10 mb-20">
         <Stat text="today" number={tasksCompletedToday} />
         <Stat text="this week" number={tasksCompletedThisWeek} />
         <Stat text={format(today, "MMMM")} number={tasksCompletedThisMonth} />
         <Stat text={format(today, "y")} number={tasksCompletedThisYear} />
-        <Stat text="total" number={totalCompletedTasks} />
+        {/* <Stat text="total" number={totalCompletedTasks} /> */}
       </div>
       <div className="flex flex-col lg:flex-row gap-10 items-center justify-center m-10">
         <StatusDonut tasks={tasks} theme={theme} />

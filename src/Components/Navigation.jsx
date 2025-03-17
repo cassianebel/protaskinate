@@ -56,7 +56,7 @@ const Navigation = ({ openModal, toggleTheme, user }) => {
         className="p-2 flex items-center gap-2 cursor-pointer group opacity-80 hover:opacity-100 duration-300 "
       >
         <IoInvertMode className="md:scale-100 group-hover:scale-120 duration-300 " />
-        <span className="hidden lg:block text-base">Toggle Theme</span>
+        <span className="hidden lg:block text-base">Theme</span>
       </button>
     </nav>
   );

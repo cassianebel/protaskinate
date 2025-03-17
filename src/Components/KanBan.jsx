@@ -282,7 +282,7 @@ const KanBan = ({ user, theme }) => {
       {showConfetti && (
         <Confetti
           recycle={false}
-          numberOfPieces={300}
+          numberOfPieces={600}
           gravity={0.5}
           tweenDuration={1000}
           colors={[colors.low, colors.medium, colors.high]}
